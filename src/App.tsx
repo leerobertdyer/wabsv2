@@ -1,28 +1,23 @@
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import NavBar from "./Components/NavBar/NavBar";
+import Home from "./Components/Home/Home";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Footer from "./Components/Footer/Footer";
+import Login from "./Components/Login/Login";
 
 function App() {
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="w-screen h-screen">
+        <NavBar />
+        <Routes>
+        <Route path="/" Component={Home} />
+        <Route path="/login" Component={Login} />
+        </Routes>
+      <Footer />
       </div>
-      <h1>Write A Bad Song V2</h1>
-      <div className="card">
+</Router>
 
-      </div>
-      <p className="read-the-docs">
-        Work In Progress
-      </p>
-    </>
-  )
+  );
 }
 
-export default App
+export default App;
