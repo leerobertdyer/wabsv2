@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -61,7 +62,7 @@ function handleLoginSubmit(e: React.MouseEvent) {
         </div>
         <div className="flex justify-start ml-5 items-center mt-4">
         <p className="text-[#696767] mt-4">New to WABS?</p>
-        <p className="bold text-black mt-4 ml-2">Sign Up</p>
+        <Link to="/signup" className="bold text-black mt-4 ml-2">Sign Up</Link>
         </div>
       </div>
     </>

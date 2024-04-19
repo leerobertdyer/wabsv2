@@ -49,7 +49,7 @@ export default function Home() {
           Write a song once a month and remind your friends to write one too!
         </p>
         <div
-          className="overflow-hidden h-[235px] mt-4 w-[343px] flex flex-col  justify-start items-center"
+          className="overflow-hidden h-[235px] mt-4 w-full flex flex-col  justify-start items-center"
           style={{
             backgroundImage: 'url("/mozartcolory.png")',
             backgroundSize: "cover",
