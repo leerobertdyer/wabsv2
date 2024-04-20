@@ -15,7 +15,9 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [location, setLocation] = useState("");
+  // const [location, setLocation] = useState("");
+
+  console.log(genre, phoneNumber)
 
   function handlePhotoDivClick() {
     document.getElementById("photo")?.click();
@@ -54,15 +56,14 @@ export default function Signup() {
 
   return (
     <>
-      <div className="pt-5 w-full">
+      <div className="pt-5 w-[22rem] flex flex-col items-center m-auto">
         <h1 className="text-2xl pb-3 font-bold">Your Info</h1>
-        <div className="w-full">
-          <form onSubmit={() => handleSignupSubmit}>
-            <div className="flex flex-col w-[400px] items-center m-auto">
+          <form className="w-full" onSubmit={() => handleSignupSubmit}>
               <div
                 className="
                 flex 
                 flex-col 
+                m-auto
                 rounded-full 
                 w-[100px] 
                 h-[100px] 
@@ -136,9 +137,7 @@ export default function Signup() {
               >
                 Sign up
               </Button>
-            </div>
           </form>
-        </div>
         <div className="flex justify-start ml-5 items-center mt-4">
           <p className="text-[#696767] mt-4">Already have an account?</p>
           <Link to="/signup" className="bold text-black mt-4 ml-2">

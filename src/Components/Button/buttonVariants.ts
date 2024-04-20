@@ -10,7 +10,7 @@ export const button = tv({
 		},
 		size: {
 			small: 'text-sm w-[8.75rem] h-[1.75rem]',
-			medium: 'text-[.875rem] w-[25rem] h-[2.5rem]',
+			medium: 'text-[.875rem] w-[80%] h-[2.5rem]',
 			full: 'w-full',
 		},
 	},
