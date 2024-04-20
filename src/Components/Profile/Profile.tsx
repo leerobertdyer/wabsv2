@@ -6,7 +6,7 @@ export default function Profile() {
 const navigate = useNavigate();
 
   return (
-    <>
+    <div className="p-1">
       <h1>My Account</h1>
       <div className="flex flex-col items-center justify-start w-[22rem] m-auto">
         <div
@@ -43,6 +43,12 @@ const navigate = useNavigate();
           </Button>
         </div>
       </div>
-    </>
+        <div className="mt-4 ">
+          <h5 className="font-bold text-[1.25rem] pb-4">Your Songs</h5>
+          <p className="pb-2">You have no songs! Go Write A Bad Song!</p>
+          <h6 className="font-bold text-[1.25rem] pb-4">Your Buddies</h6>
+          <p className="pb-2">You have no buddies! Help your friends!</p>
+        </div>
+    </div>
   );
 }

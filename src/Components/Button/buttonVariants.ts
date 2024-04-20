@@ -2,7 +2,7 @@ import { FormEvent } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
 export const button = tv({
-	base: 'py-2 px-4 mt-2 mb-2 rounded-[4px]',
+	base: 'py-2 px-4 mt-2 mb-2 rounded-3xl',
 	variants: {
 		role: {
 			primary: 'bg-black text-white hover:bg-white hover:text-black border-[1px]',
