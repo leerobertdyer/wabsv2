@@ -4,7 +4,7 @@ import { FaRegStar } from "react-icons/fa";
 
 export default function Home() {
   return (
-    <div className="bg-white p-4 flex flex-col items-center">
+    <div className="bg-white p-4 pb-[8rem] flex flex-col items-center">
       <div
         className="overflow-hidden h-[343px] w-[343px] flex flex-col  justify-end items-center"
         style={{

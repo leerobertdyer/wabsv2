@@ -7,15 +7,17 @@ import { Link } from "react-router-dom";
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-function toggleMenu() {
+  function toggleMenu() {
     setMenuOpen(!menuOpen);
-    document.body.style.overflow = menuOpen ? 'auto' : 'hidden';
+    document.body.style.overflow = menuOpen ? "auto" : "hidden";
   }
 
   return (
-    <div className="
+    <div
+      className="
     {menuOpen ? 'overflow-hidden' : ''}
-    bg-white h-[100px] border-b-[1px] border-[#D9D9D9] flex justify-between items-center p-4">
+    bg-white h-[100px] border-b-[1px] border-[#D9D9D9] flex justify-between items-center p-4"
+    >
       <div
         className="rounded-full bg-gray-200 h-12 w-12"
         style={{
@@ -23,11 +25,11 @@ function toggleMenu() {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
-      >
-      </div>
-    { menuOpen 
-    ? <div 
-    className="
+      ></div>
+      {menuOpen ? (
+        <div
+          className="
+    z-10
     border-3 
     border-black 
     absolute top-0 
@@ -42,11 +44,14 @@ function toggleMenu() {
     items-center
     gap-3
     text-2xl"
-    onClick={() => toggleMenu()}> 
-    <Link to="/">Home</Link>
-    <Link to="/login">Login</Link>
-    </div> 
-    : <RxHamburgerMenu className="text-3xl" onClick={() => toggleMenu()} /> }
+          onClick={() => toggleMenu()}
+        >
+          <Link to="/">Home</Link>
+          <Link to="/login">Login</Link>
+        </div>
+      ) : (
+        <RxHamburgerMenu className="text-3xl" onClick={() => toggleMenu()} />
+      )}
     </div>
   );
 }

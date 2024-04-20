@@ -25,7 +25,7 @@ export default function InputField(props: PropsDefinition) {
         className={
           props.type === "checkbox"
             ? "w-[1.5rem] h-[1.5rem]"
-            : "w-full h-[2.5rem] border-[1px] border-gray rounded-[4px]"
+            : "w-full h-[2.5rem] border-[1px] border-gray rounded-[4px] p-2 text-[.75rem]"
         }
         type={props.type}
         id={props.id}
