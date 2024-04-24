@@ -1,12 +1,20 @@
 import { FaCameraRetro } from "react-icons/fa";
-import Button from "../Button/Button";
-import { useNavigate } from "react-router-dom";
+import Button from "../../Components/Button/Button";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Profile() {
-const navigate = useNavigate();
+  const [photo, setPhoto] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorage.getItem("loggedIn")) navigate("/login");
+    const storedPhotoUrl = localStorage.getItem("photoUrl");
+    setPhoto(storedPhotoUrl ? storedPhotoUrl : "");
+  }, [navigate]);
 
   return (
-    <div className="p-1">
+    <div className="p-4">
       <h1>My Account</h1>
       <div className="flex flex-col items-center justify-start w-[22rem] m-auto">
         <div
@@ -21,7 +29,9 @@ const navigate = useNavigate();
         items-center 
         justify-center"
           style={{
-            backgroundImage: `url(${localStorage.getItem("photoUrl")})`,
+            backgroundImage: photo
+              ? `url(${localStorage.getItem("photoUrl")})`
+              : 'url("/fakeDude.png")',
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -35,20 +45,25 @@ const navigate = useNavigate();
           <h3>{localStorage.getItem("genre")?.toLowerCase()}</h3>
           <h4>{localStorage.getItem("location")?.toLowerCase()}</h4>
           <Button
-            size="medium"
+            size="full"
             role="primary"
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate("/signup")}
           >
             Edit
           </Button>
         </div>
       </div>
-        <div className="mt-4 ">
-          <h5 className="font-bold text-[1.25rem] pb-4">Your Songs</h5>
-          <p className="pb-2">You have no songs! Go Write A Bad Song!</p>
-          <h6 className="font-bold text-[1.25rem] pb-4">Your Buddies</h6>
-          <p className="pb-2">You have no buddies! Help your friends!</p>
-        </div>
+      <div className="mt-4 flex flex-col justify-around min-h-[20rem] h-fit gap-2">
+        <h5 className="font-bold text-[1.25rem]">Your Songs</h5>
+        <p>
+          You have no songs! Go <Link className="text-wabsLink" to="/submit-song">Write A Bad Song!</Link>
+        </p>
+        <h6 className="font-bold text-[1.25rem]">Your Buddies</h6>
+        <p>You have no buddies! Help your friends!</p>
+        <Link className="text-wabsLink" to="/">
+          Log Out
+        </Link>
+      </div>
     </div>
   );
 }

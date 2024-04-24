@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "../Button/Button";
+import Button from "../../Components/Button/Button";
 import SignupPage1 from "./SignupPage1";
 import SignupPage2 from "./SignupPage2";
 import SignupSuccess from "./SignupSuccess";
@@ -21,6 +21,10 @@ export default function Signup() {
   const [success, setSuccess] = useState(false);
 
   function handleSignupSubmit() {
+    if (!reminderStyle) {
+      alert("Please select a reminder style");
+      return;
+    }
     console.log("Signed up.... but not for real yet....");
     localStorage.setItem("artistName", artistName);
     localStorage.setItem("genre", genre);
@@ -29,6 +33,7 @@ export default function Signup() {
     localStorage.setItem("password", password);
     localStorage.setItem("location", location);
     localStorage.setItem("reminderStyle", reminderStyle);
+    localStorage.setItem("loggedIn", "true")
     setSuccess(true);
   }
 

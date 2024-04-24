@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
+import Button from "../../Components/Button/Button";
 
 export default function Home() {
   return (
@@ -19,39 +20,24 @@ export default function Home() {
             sometimes we need to Write a{" "}
             <span className="line-through">bad</span> song.
           </p>
-          <div
-            className="
-                      text-white 
-                      bg-black 
-                      rounded-xl 
-                      w-[185px] 
-                      h-[48px]
-                      flex
-                      justify-center
-                      align-center            
-                      "
-          >
-            <Link
-              to="/login"
-              className="
-          flex 
-          flex-col 
-          justify-center"
-            >
-              Write
-            </Link>
-          </div>
         </div>
       </div>
-      <div className="p-5 w-[343px] h-[343px] overflow-hidden flex flex-col align-center justify-center">
-        <p className="text-sm pt-2">Keep you and your friends accountable</p>
+      <div className="w-[22rem] h-fit">
+          <Link to="/login">
+        <Button role="primary" size="full">
+        Write
+        </Button>
+          </Link>
+      </div>
+      <div className="p-5 w-[25rem] h-[30rem] overflow-hidden flex flex-col align-center justify-center">
+        <p className="text-2xl pt-2">Keep you and your friends accountable</p>
         <p className="text-xs pt-2 text-[#737373]">
           Write a song once a month and remind your friends to write one too!
         </p>
         <div
           className="overflow-hidden h-[235px] mt-4 w-full flex flex-col  justify-start items-center"
           style={{
-            backgroundImage: 'url("/mozartcolory.png")',
+            backgroundImage: 'url("/musicians1.png")',
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -64,7 +50,7 @@ export default function Home() {
             <FaStar size={25} />
             <FaRegStar size={25} />
           </div>
-          <p className="text-[#737373] text-sm pt-2">
+          <p className="text-[#737373] text-xl pt-2">
             It’s the best app ever!!!! Writing one song a month keeps me focused
             and consistent!
           </p>

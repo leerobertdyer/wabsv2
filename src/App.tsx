@@ -1,10 +1,13 @@
 import NavBar from "./Components/NavBar/NavBar";
-import Home from "./Components/Home/Home";
+import Home from "./Views/Home/Home";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Footer from "./Components/Footer/Footer";
-import Login from "./Components/Login/Login";
-import Signup from "./Components/signup/Signup";
-import Profile from "./Components/Profile/Profile";
+import Login from "./Views/Login/Login";
+import Signup from "./Views/signup/Signup";
+import Profile from "./Views/Profile/Profile";
+import Songs from "./Views/Songs/Songs";
+import SubmitSong from "./Views/SubmitSong/SubmitSong";
+import Buddies from "./Views/Buddies/Buddies";
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
           <Route path="/login" Component={Login} />
           <Route path="/signup" Component={Signup} />
           <Route path="/profile" Component={Profile} />
+          <Route path="/songs" Component={Songs} />
+          <Route path="/submit-song" Component={SubmitSong} />
+          <Route path="/buddies" Component={Buddies} />
         </Routes>
         <Footer />
       </div>

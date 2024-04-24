@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { FaCameraRetro } from "react-icons/fa";
-import InputField from "../InputField/InputField";
-import Button from "../Button/Button";
+import InputField from "../../Components/InputField/InputField";
+import Button from "../../Components/Button/Button";
 import { Link } from "react-router-dom";
 
 type PropsDefinition = {

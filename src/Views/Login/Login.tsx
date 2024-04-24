@@ -1,15 +1,31 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import InputField from "../InputField/InputField";
+import InputField from "../../Components/InputField/InputField";
+import Button from "../../Components/Button/Button";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // const [rememberMe, setRememberMe] = useState(false);
 
-  function handleLoginSubmit(e: React.MouseEvent) {
+  function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (email === "" || password === "") return;
+    if (!email) {
+      alert("Please enter your email");
+      return;
+    }
+    if (!password) {
+      alert("Please enter your password");
+      return;
+    }
+    if (
+      email !== localStorage.getItem("email") ||
+      password !== localStorage.getItem("password")
+    ) {
+      alert("Invalid email or password");
+      return;
+    }
+    localStorage.setItem("loggedIn", "true");
     console.log(email, "Signed in.... but not for real yet....");
   }
 
@@ -17,7 +33,10 @@ export default function Login() {
     <>
       <div className="pt-5 w-[22rem] m-auto">
         <h1 className="text-2xl text-center pb-3 font-bold">Login</h1>
-        <form className="flex flex-col items-center">
+        <form
+          className="flex flex-col items-center"
+          onSubmit={handleLoginSubmit}
+        >
           <InputField
             id="email"
             type="email"
@@ -32,22 +51,18 @@ export default function Login() {
             labelName="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <InputField id="rememberMe" type="checkbox" labelName="Remember Me?" />
-          <button
-            className="
-            text-white 
-            bg-black 
-            rounded-2xl 
-            w-[330px] h-[56px] 
-            mt-4"
-            onClick={(e) => handleLoginSubmit(e)}
-          >
+          <InputField
+            id="rememberMe"
+            type="checkbox"
+            labelName="Remember Me?"
+          />
+          <Button type="submit" role="primary" size="full">
             Login
-          </button>
+          </Button>
         </form>
         <div className="flex justify-start items-center mt-4">
           <p className="text-[#696767] mt-4">New to WABS?</p>
-          <Link to="/signup" className="bold text-black mt-4 ml-2">
+          <Link to="/signup" className="bold text-blue-800 mt-4 ml-2">
             Sign Up
           </Link>
         </div>
