@@ -49,10 +49,33 @@ export default function NavBar() {
     gap-3
     text-2xl"
         >
-          <p className="text-3xl absolute top-7 right-7 hover:cursor-pointer" onClick={() => toggleMenu()}>x</p>
-          <Link className="underline text-sm" to="/profile">My Account</Link>
-          <Link className="underline text-sm" to="/songs">My Songs</Link>
-          <Link className="underline text-sm" to="/buddies">My Buddies</Link>
+          <p
+            className="text-[3rem] absolute top-7 right-7 hover:cursor-pointer"
+            onClick={() => toggleMenu()}
+          >
+            x
+          </p>
+          <Link
+            className="underline text-sm"
+            to="/profile"
+            onClick={() => toggleMenu()}
+          >
+            My Account
+          </Link>
+          <Link
+            className="underline text-sm"
+            to="/songs"
+            onClick={() => toggleMenu()}
+          >
+            My Songs
+          </Link>
+          <Link
+            className="underline text-sm"
+            to="/buddies"
+            onClick={() => toggleMenu()}
+          >
+            My Buddies
+          </Link>
         </div>
       ) : (
         <RxHamburgerMenu className="text-3xl" onClick={() => toggleMenu()} />

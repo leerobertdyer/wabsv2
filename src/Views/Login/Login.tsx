@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import InputField from "../../Components/InputField/InputField";
 import Button from "../../Components/Button/Button";
+import validateLogin from "./helpers";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,23 +11,7 @@ export default function Login() {
 
   function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!email) {
-      alert("Please enter your email");
-      return;
-    }
-    if (!password) {
-      alert("Please enter your password");
-      return;
-    }
-    if (
-      email !== localStorage.getItem("email") ||
-      password !== localStorage.getItem("password")
-    ) {
-      alert("Invalid email or password");
-      return;
-    }
-    localStorage.setItem("loggedIn", "true");
-    console.log(email, "Signed in.... but not for real yet....");
+  validateLogin(email, password);
   }
 
   return (

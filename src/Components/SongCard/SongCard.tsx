@@ -23,10 +23,11 @@ export default function SongCard(props: PropsDefinition) {
     border
     border-wabsGray
     mb-8
+    max-w-[18rem]
     p-6
     gap-3"
     >
-        <p className="text-xl absolute top-2 right-3 text-wabsPurple hover:cursor-pointer"
+        <p className="text-[2.5rem] absolute top-0 right-4 text-wabsPurple hover:cursor-pointer"
         onClick={() => handleRemoveSong(song.id, song.finished)}>x</p>
         <IoMusicalNotesOutline className="fill-wabsPurple" size={40}/>
       <h1 className="w-fit text-center">{song.title}</h1>
