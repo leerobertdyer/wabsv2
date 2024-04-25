@@ -14,9 +14,10 @@ async function validateLogin(email: string, password: string) {
     });
     if (resp.ok) {
       localStorage.setItem("loggedIn", "true");
-      window.history.pushState({}, "", "/profile");
+      return true
     } else {
       alert("Login failed. Please check your credentials.");
+      return false
     }
   } catch (error) {
     alert(`Error: ${error}`);

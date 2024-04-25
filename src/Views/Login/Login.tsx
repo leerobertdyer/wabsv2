@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InputField from "../../Components/InputField/InputField";
 import Button from "../../Components/Button/Button";
 import validateLogin from "./helpers";
@@ -8,10 +8,13 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // const [rememberMe, setRememberMe] = useState(false);
+  
+  const navigate = useNavigate();
 
-  function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
+ async function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-  validateLogin(email, password);
+    const validated = await validateLogin(email, password);
+    if (validated) navigate("/profile")
   }
 
   return (

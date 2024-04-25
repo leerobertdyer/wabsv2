@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 export default function Footer() {
   return (
     <div
@@ -15,13 +17,9 @@ export default function Footer() {
     w-full 
     h-20"
     >
-      <a
-        href="mailto:lee.dyer.dev@gmail.com?subject=WABS%20Contact"
-        className="underline"
-        about="WABS Contact: "
-      >
+      <Link to="/contact" className="text-[1.25rem]">
         Contact
-      </a>
+      </Link>
       <p className="text-[.75rem]">@2024 Write a Bad Song</p>
     </div>
   );

@@ -8,6 +8,7 @@ import Profile from "./Views/Profile/Profile";
 import Songs from "./Views/Songs/Songs";
 import SubmitSong from "./Views/SubmitSong/SubmitSong";
 import Buddies from "./Views/Buddies/Buddies";
+import Contact from "./Views/Contact/Contact";
 
 function App() {
   return (
@@ -22,8 +23,9 @@ function App() {
           <Route path="/songs" Component={Songs} />
           <Route path="/submit-song" Component={SubmitSong} />
           <Route path="/buddies" Component={Buddies} />
+          <Route path="/contact" Component={Contact} />
         </Routes>
-        <Footer />
+        {window.location.pathname !== "/contact" && <Footer />}
       </div>
     </Router>
   );
