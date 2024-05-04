@@ -2,20 +2,15 @@ import { useEffect, useState } from "react";
 import SongCard from "../../Components/SongCard/SongCard";
 import Button from "../../Components/Button/Button";
 import { Link } from "react-router-dom";
-
-const tempSongs = [
-  { id: 1, title: "Song 1", started: "12/22/2021", finished: true },
-  { id: 2, title: "Song 2", started: "12/22/2021", finished: true },
-  { id: 3, title: "Song 3", started: "12/22/2021", finished: true },
-  { id: 4, title: "Song 4", started: "today", finished: false },
-  { id: 5, title: "Song 5", started: "01/11/2072", finished: false },
-];
+import { supabase } from "../../supabaseClient";
 
 export type Song = {
   id: number;
   title: string;
   started: string;
   finished: boolean;
+  lyrics: string;
+  music: string;
 };
 
 export default function Songs() {
@@ -24,13 +19,19 @@ export default function Songs() {
 
   useEffect(() => {
     document.title = "W.A.B.S. Songs";
-    if (!localStorage.getItem("songs")) {
-    setSongs(tempSongs.filter((song) => song.finished));
-    setUnfinishedSongs(tempSongs.filter((song) => !song.finished));
-    } else {
-        setSongs(JSON.parse(localStorage.getItem("songs") || ""));
-        setUnfinishedSongs(JSON.parse(localStorage.getItem("unfinishedSongs") || ""));
+    async function getSongs() {
+      const {data} = await supabase.auth.getUser()
+      const user_id = data?.user?.id;
+      console.log(user_id);
+      const {data: songData} = await supabase.from("songs").select("*").eq("user_id", user_id);
+      if (songData){
+        const nextSongs = songData.filter((song: Song) => song.finished);
+        const nextUnfinishedSongs = songData.filter((song: Song) => !song.finished);
+        setSongs(nextSongs);
+        setUnfinishedSongs(nextUnfinishedSongs);
+      }
     }
+    getSongs();
   }, []);
 
   function removeSong(id: number, finished: boolean) {

@@ -1,17 +1,25 @@
 import { FaCameraRetro } from "react-icons/fa";
 import Button from "../../Components/Button/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export default function Profile() {
-  const [photo, setPhoto] = useState("");
+type PropsDefinition = {
+  photo: string;
+  artistName: string;
+  genre: string;
+  location: string;
+  phoneNumber: string;
+  getProfile: () => Promise<void>
+}
+
+export default function Profile({ photo, getProfile, artistName, genre, location, phoneNumber}: PropsDefinition) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!localStorage.getItem("loggedIn")) navigate("/login");
-    const storedPhotoUrl = localStorage.getItem("photoUrl");
-    setPhoto(storedPhotoUrl ? storedPhotoUrl : "");
-  }, [navigate]);
+    if (!artistName) {
+      getProfile();
+    }
+  }, [artistName, navigate, getProfile]);
 
   return (
     <div className="p-4">
@@ -29,9 +37,7 @@ export default function Profile() {
         items-center 
         justify-center"
           style={{
-            backgroundImage: photo
-              ? `url(${localStorage.getItem("photoUrl")})`
-              : 'url("/fakeDude.png")',
+            backgroundImage: `url(${photo})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -40,10 +46,11 @@ export default function Profile() {
             <FaCameraRetro size={25} />
           </div>
         </div>
-        <div className="flex flex-col items-center pt-6 w-[22rem]">
-          <h2>{localStorage.getItem("artistName")?.toLowerCase()}</h2>
-          <h3>{localStorage.getItem("genre")?.toLowerCase()}</h3>
-          <h4>{localStorage.getItem("location")?.toLowerCase()}</h4>
+        <div className="flex flex-col m-auto items-start pt-6 w-[17rem]">
+          <h2>{`Artist Name: ${artistName}`}</h2>
+          <h3>Genre: {genre}</h3>
+          <h4>Location {location}</h4>
+          <h5>Phone: {phoneNumber}</h5>
           <Button
             size="full"
             role="primary"
@@ -58,8 +65,8 @@ export default function Profile() {
         <p>
           You have no songs! Go <Link className="text-wabsLink" to="/submit-song">Write A Bad Song!</Link>
         </p>
-        <h6 className="font-bold text-[1.25rem]">Your Buddies</h6>
-        <p>You have no buddies! Help your friends!</p>
+        {/* <h6 className="font-bold text-[1.25rem]">Your Buddies</h6>
+        <p>You have no buddies! Help your friends!</p> */}
         <Link className="text-wabsLink" to="/">
           Log Out
         </Link>

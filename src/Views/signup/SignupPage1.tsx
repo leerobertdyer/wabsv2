@@ -3,6 +3,7 @@ import { FaCameraRetro } from "react-icons/fa";
 import InputField from "../../Components/InputField/InputField";
 import Button from "../../Components/Button/Button";
 import { Link } from "react-router-dom";
+import { getUrlFromSupabaseFile, uploadPhotoToSupabase } from "./helpers";
 
 type PropsDefinition = {
     photo: string
@@ -27,19 +28,17 @@ export default function SignupBasicInfo(props: PropsDefinition) {
         document.getElementById("photo")?.click();
       }
     
-      function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+      async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files) return;
         const file = e.target.files[0];
         if (file) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const url = reader.result;
-            if (typeof url === "string") {
-              localStorage.setItem("photoUrl", url);
-              setPhoto(url);
+          const data = await uploadPhotoToSupabase(file, artistName);
+          console.log(data)
+          if (data) 
+            {
+             const { publicUrl } = getUrlFromSupabaseFile('profile_photos', data.path)
+              setPhoto(publicUrl);
             }
-          };
-          reader.readAsDataURL(file);
         }
       }
     
@@ -52,7 +51,16 @@ export default function SignupBasicInfo(props: PropsDefinition) {
       }
     
       function handleNextStep() {
-        if (!artistName || !email || !password) return;
+        if (!artistName || !email || !password)
+          {
+            alert("Please fill out all required fields") 
+            return;
+          }
+        if (!photo) 
+          {
+            alert("Please upload a photo")
+            return
+          }
         if (!handleConfirmPassword(passwordConfirm)) return;
         setFormPage(2);
       }
@@ -61,7 +69,6 @@ export default function SignupBasicInfo(props: PropsDefinition) {
         <>
           <div className="pt-5 w-[22rem] pb-[7rem] flex flex-col items-center m-auto">
             <h1 className="text-2xl pb-3 font-bold">Your Info</h1>
-        
               <div
                 className="
                   z-0
@@ -73,6 +80,7 @@ export default function SignupBasicInfo(props: PropsDefinition) {
                     h-[100px] 
                     bg-gray-200 
                     items-center 
+                   hover:cursor-pointer
                     justify-center"
                 style={{
                   backgroundImage:
@@ -91,13 +99,14 @@ export default function SignupBasicInfo(props: PropsDefinition) {
                   id="photo"
                   type="file"
                   labelName="Photo"
+                  required
                   onChange={(e) => handlePhotoChange(e)}
                 />
               </div>
               <InputField
                 id="artistName"
                 type="text"
-                labelName="Artist Name"
+                labelName="Artist Name*"
                 placeholder="Connor O'Malley"
                 required
                 onChange={(e) => setArtistName(e.target.value)}
@@ -120,7 +129,7 @@ export default function SignupBasicInfo(props: PropsDefinition) {
               <InputField
                 id="email"
                 type="email"
-                labelName="E-mail"
+                labelName="E-mail*"
                 placeholder="email@email.com"
                 required
                 onChange={(e) => setEmail(e.target.value)}
@@ -128,7 +137,7 @@ export default function SignupBasicInfo(props: PropsDefinition) {
               <InputField
                 id="password"
                 type="password"
-                labelName="Password"
+                labelName="Password*"
                 placeholder="********"
                 required
                 onChange={(e) => setPassword(e.target.value)}

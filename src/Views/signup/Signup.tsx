@@ -3,8 +3,13 @@ import Button from "../../Components/Button/Button";
 import SignupPage1 from "./SignupPage1";
 import SignupPage2 from "./SignupPage2";
 import SignupSuccess from "./SignupSuccess";
+import { signupWithSupabase, storeAdditionalUserData } from "./helpers";
 
-export default function Signup() {
+type PropsDefinition = {
+  getProfile: () => void;
+};
+
+export default function Signup({ getProfile }: PropsDefinition) {
   const [photo, setPhoto] = useState(() => {
     const storedPhotoUrl = localStorage.getItem("photoUrl");
     return storedPhotoUrl ? storedPhotoUrl : "";
@@ -20,20 +25,20 @@ export default function Signup() {
   const [formPage, setFormPage] = useState(1);
   const [success, setSuccess] = useState(false);
 
-  function handleSignupSubmit() {
-    if (!reminderStyle) {
-      alert("Please select a reminder style");
-      return;
-    }
-    console.log("Signed up.... but not for real yet....");
-    localStorage.setItem("artistName", artistName);
-    localStorage.setItem("genre", genre);
-    localStorage.setItem("phoneNumber", phoneNumber);
-    localStorage.setItem("email", email);
-    localStorage.setItem("password", password);
-    localStorage.setItem("location", location);
-    localStorage.setItem("reminderStyle", reminderStyle);
-    localStorage.setItem("loggedIn", "true")
+  async function handleSignupSubmit() {
+    await signupWithSupabase({
+      email,
+      password
+    });
+    await storeAdditionalUserData({
+      photo,
+      artistName,
+      genre,
+      phoneNumber,
+      location,
+      reminderStyle,
+    });
+    getProfile();
     setSuccess(true);
   }
 

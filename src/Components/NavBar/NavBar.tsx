@@ -13,24 +13,28 @@ export default function NavBar() {
   }
 
   return (
+    
     <div
       className="
-    bg-white 
-    h-[100px]
-     border-b-[1px] 
-    border-[#D9D9D9] 
-    flex 
-    justify-between 
-    items-center p-4"
-    >
+      bg-white 
+      h-[100px]
+      border-b-[1px] 
+      border-[#D9D9D9] 
+      flex 
+      justify-between 
+      items-center p-4"
+      >
+      <Link to="/">
       <div
-        className="rounded-full bg-gray-200 h-12 w-12 z-20"
+        className="rounded-full h-12 w-12 z-20"
         style={{
-          backgroundImage: 'url("/mozartcolory.png")',
+          backgroundImage: 'url("/logo.png")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
-      ></div>
+        >
+        </div>
+        </Link>
       {menuOpen ? (
         <div
           className="
@@ -71,10 +75,10 @@ export default function NavBar() {
           </Link>
           <Link
             className="underline text-sm"
-            to="/buddies"
+            to="/feed"
             onClick={() => toggleMenu()}
           >
-            My Buddies
+            My Feed
           </Link>
         </div>
       ) : (

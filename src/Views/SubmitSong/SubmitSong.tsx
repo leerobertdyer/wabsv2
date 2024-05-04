@@ -5,30 +5,65 @@ import { IoMusicalNotesOutline } from "react-icons/io5";
 import { IoMdSave } from "react-icons/io";
 import { FaCircleCheck } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { submitSong } from "./helpers";
+import { supabase } from "../../supabaseClient";
 
-export default function SubmitSong() {
+type PropsDefinition = {
+  artistName: string
+}
+
+export default function SubmitSong({artistName}: PropsDefinition) {
   const [songTitle, setSongTitle] = useState("");
   const [lyrics, setLyrics] = useState("");
   const [music, setMusic] = useState("");
   const [success, setSuccess] = useState(false);
+  const [finished, setFinished] = useState(false);
 
+  // Trigger audio input
   function onMusicIconClick() {
     document.getElementById("addMusic")?.click();
   }
-  function handleSubmitMusic(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log(e.target.files);
-    setMusic("temp");
-  }
 
+  // Upload Audio File
+  async function handleUploadAudio(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return;
+    const file = e.target.files[0];
+    const fileName = artistName + Date.now()
+    const {data, error} = await supabase.storage.from("songs").upload(`/${fileName}`, file);
+    if (error) {
+      alert(`Audio upload failed. Please try again. ${error.message}`);
+      return;
+    }
+    if (data)
+      {
+        const {data} = supabase.storage.from("songs").getPublicUrl(`/${fileName}`);
+        if (!data.publicUrl) return alert("Error getting public URL")
+        setMusic(data.publicUrl);
+      }
+  }
+  
+  // Handle UNFINISHED song submission
   function onSaveClick() {
-    console.log("saving but not really");
+    if (!songTitle) return;
+    submitSong({
+      title: songTitle,
+      lyrics: lyrics,
+      audio: music,
+      finished: false,
+    });
+    setSuccess(true);
   }
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!songTitle || !lyrics || !music) return;
-    console.log(e.target);
-    console.log(songTitle, lyrics, music);
+    submitSong({
+      title: songTitle,
+      lyrics: lyrics,
+      audio: music,
+      finished: true,
+    });
+    setFinished(true);
     setSuccess(true);
   }
 
@@ -41,8 +76,8 @@ export default function SubmitSong() {
         >
           <FaCircleCheck className="fill-wabsSuccess" size={110} />
           Success!
-          <p>Your song has been saved</p>
-          <Link className="w-[22rem]" to="/profile">
+          <p>Your song has been {finished ? 'posted!' : 'saved!'}</p>
+          <Link className="w-[22rem]" to="/feed">
             <Button size="full" role="primary">
               Continue
             </Button>
@@ -103,7 +138,7 @@ export default function SubmitSong() {
           hidden
           accept=".mp3, .m4a"
           id="addMusic"
-          onChange={handleSubmitMusic}
+          onChange={handleUploadAudio}
         />
         <Button type="submit" role="primary" size="full">
           Submit

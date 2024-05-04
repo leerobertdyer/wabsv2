@@ -4,17 +4,23 @@ import InputField from "../../Components/InputField/InputField";
 import Button from "../../Components/Button/Button";
 import validateLogin from "./helpers";
 
-export default function Login() {
+type PropsDefinition = {
+  getProfile: () => void;
+};
+
+export default function Login({getProfile}: PropsDefinition) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // const [rememberMe, setRememberMe] = useState(false);
-  
   const navigate = useNavigate();
 
- async function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const validated = await validateLogin(email, password);
-    if (validated) navigate("/profile")
+    const isLoggedIn = await validateLogin(email, password);
+    if (isLoggedIn) {
+      getProfile();
+      navigate("/profile");
+    }
   }
 
   return (
