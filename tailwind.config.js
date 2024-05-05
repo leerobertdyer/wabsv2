@@ -8,7 +8,8 @@ export const theme = {
       wabsPurpleDark: '#6C1D4D',
       wabsSuccess: '#5FAD56',
       wabsLink: '#0075B2',
-      wabsGray: '#7F7D7D'
+      wabsGray: '#7F7D7D',
+      wabsSecondary: '#413620'
     }
   },
 };

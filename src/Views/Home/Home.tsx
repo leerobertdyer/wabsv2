@@ -14,43 +14,50 @@ export default function Home() {
           backgroundPosition: "center",
         }}
       >
-        <div className="bg-[#E1E5E8] w-full">
-          <h1 className="text-2xl font-bold">We can't all be Mozart,</h1>
-          <p className="text-sm pb-2">
-            sometimes we need to Write a{" "}
+        <div className="bg-white text-3xl text-wabsSecondary w-full">
+          <h1>We can't all be Mozart,</h1>
+          <p className="pb-2">
+            Let's write a {" "}
             <span className="line-through">bad</span> song.
           </p>
         </div>
       </div>
-      <div className="w-[22rem] h-fit">
+      <div className="w-[22rem] ">
           <Link to="/login">
         <Button role="primary" size="full">
-        Write
+        Login
         </Button>
           </Link>
       </div>
-      <div className="p-5 w-[25rem] h-[30rem] overflow-hidden flex flex-col align-center justify-center">
-        <p className="text-2xl pt-2">Keep you and your friends accountable</p>
+      <div className="p-5 flex flex-col align-center justify-center">
+        <p className="text-2xl pt-2">Writing is a muscle...<br/>And bad songs are the weights that create metaphorical six packs.</p>
         <p className="text-xs pt-2 text-[#737373]">
-          Write a song once a month and remind your friends to write one too!
+          Write a bad song, so when a good song comes you're ready!
         </p>
         <div
-          className="overflow-hidden h-[235px] mt-4 w-full flex flex-col  justify-start items-center"
+          className="overflow-hidden h-[235px] min-h-[13rem] mt-4 w-full flex flex-col  justify-start items-center"
           style={{
             backgroundImage: 'url("/musicians1.png")',
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         ></div>
+              <div className="w-[22rem] py-3 h-fit">
+          <Link to="/login">
+        <Button role="primary" size="full">
+        Go
+        </Button>
+          </Link>
+      </div>
         <div className="flex flex-col">
           <div className="flex mt-2">
-            <FaStar size={25} />
-            <FaStar size={25} />
-            <FaStar size={25} />
-            <FaStar size={25} />
-            <FaRegStar size={25} />
+            <FaStar size={23} fill="#0075B2" />
+            <FaStar size={23} fill="#0075B2" />
+            <FaStar size={23} fill="#0075B2" />
+            <FaStar size={23} fill="#0075B2" />
+            <FaRegStar size={23} fill="#0075B2" />
           </div>
-          <p className="text-[#737373] text-xl pt-2">
+          <p className="text-wabsSecondary text-xl pt-2">
             It’s the best app ever!!!! Writing one song a month keeps me focused
             and consistent!
           </p>

@@ -11,7 +11,7 @@ type PropsDefinition2 = {
   artistName: string;
   genre: string;
   phoneNumber: string;
-  reminderStyle: string;
+  monthlyReminder: boolean;
 };
 
 async function signupWithSupabase(props: SignUpDefinition) {
@@ -31,7 +31,7 @@ async function storeAdditionalUserData({
   genre,
   phoneNumber,
   location,
-  reminderStyle,
+  monthlyReminder,
 }: PropsDefinition2) {
   const user = await supabase.auth.getUser();
   if (user.data?.user?.id) {
@@ -44,7 +44,7 @@ async function storeAdditionalUserData({
         genre,
         phone_number: phoneNumber,
         location,
-        reminder_style: reminderStyle,
+        monthlyReminder,
       },
     ]);
     if (error) {
@@ -63,17 +63,12 @@ async function uploadPhotoToSupabase(photo: File, artistName: string) {
     alert("Photo upload failed. Please try again.");
     return;
   }
-  return data;
-}
-
-function getUrlFromSupabaseFile(bucket: string, file: string) {
-  const { data } = supabase.storage.from(bucket).getPublicUrl(file);
-  return data;
+  const { data: imageLink } = supabase.storage.from("profile_photos").getPublicUrl(data.path);
+  return imageLink.publicUrl;
 }
 
 export {
   signupWithSupabase,
   uploadPhotoToSupabase,
-  getUrlFromSupabaseFile,
   storeAdditionalUserData,
 };

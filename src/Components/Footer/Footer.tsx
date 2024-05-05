@@ -17,7 +17,7 @@ export default function Footer() {
     w-full 
     h-20"
     >
-      <Link to="/contact" className="text-[1.25rem]">
+      <Link to="/contact" className="text-[1rem] underline">
         Contact
       </Link>
       <p className="text-[.75rem]">@2024 Write a Bad Song</p>

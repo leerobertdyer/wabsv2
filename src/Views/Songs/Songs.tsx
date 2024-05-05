@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import SongCard from "../../Components/SongCard/SongCard";
 import Button from "../../Components/Button/Button";
 import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
+import { deleteASong } from "../../supabaseHelpers";
+import FeedCard from "../../Components/FeedCard/FeedCard";
 
 export type Song = {
   id: number;
@@ -10,19 +11,23 @@ export type Song = {
   started: string;
   finished: boolean;
   lyrics: string;
-  music: string;
+  publicUrl: string;
+  storagePath: string;
+  user_id: string; 
 };
 
 export default function Songs() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [unfinishedSongs, setUnfinishedSongs] = useState<Song[]>([]);
+  const [photo, setPhoto] = useState("");
+  const [location, setLocation] = useState("");
+  const [artist, setArtist] = useState("");
 
   useEffect(() => {
-    document.title = "W.A.B.S. Songs";
+    document.title = "WABS - Songs";
     async function getSongs() {
       const {data} = await supabase.auth.getUser()
       const user_id = data?.user?.id;
-      console.log(user_id);
       const {data: songData} = await supabase.from("songs").select("*").eq("user_id", user_id);
       if (songData){
         const nextSongs = songData.filter((song: Song) => song.finished);
@@ -30,21 +35,22 @@ export default function Songs() {
         setSongs(nextSongs);
         setUnfinishedSongs(nextUnfinishedSongs);
       }
+      const {data: profileData} = await supabase.from("profiles").select("*").eq("user_id", user_id).single();  
+      if (profileData)
+        {
+          setPhoto(profileData.photo); 
+          setLocation(profileData.location); 
+          setArtist(profileData.artist_name)
+        } 
+
     }
     getSongs();
   }, []);
 
-  function removeSong(id: number, finished: boolean) {
-    if (finished) {
-      const nextSongs = songs.filter((song) => song.id !== id);
-      setSongs(nextSongs);
-    } else {
-      const nextUnfinishedSongs = unfinishedSongs.filter(
-        (song) => song.id !== id
-      );
-      setUnfinishedSongs(nextUnfinishedSongs);
-    }
+  async function handleDeleteSong(publicUrl: string, storagePath: string) {
+    await deleteASong(publicUrl, storagePath);
   }
+    
 
   return (
     <div className="p-4">
@@ -59,14 +65,32 @@ export default function Songs() {
       <div className="flex flex-col items-center gap-3">
         <h2>Songs In Progress</h2>
         <div className="flex flex-wrap w-full justify-evenly ">
-          {unfinishedSongs.map((song) => (
-            <SongCard song={song} handleRemoveSong={removeSong} />
+          {unfinishedSongs.map((song, idx) => (
+            <FeedCard  key={idx}
+            publicUrl={song.publicUrl}
+            storagePath={song.storagePath}
+            photo={photo}
+            location={location}
+            title={song.title}
+            lyrics={song.lyrics}
+            artist={artist}
+            id={song.user_id}
+            handleDeleteSong={handleDeleteSong}/>
           ))}
         </div>
         <h3>Songs Completed</h3>
         <div className="flex flex-wrap w-full justify-evenly">
-          {songs.map((song) => (
-            <SongCard song={song} handleRemoveSong={removeSong} />
+          {songs.map((song, idx) => (
+            <FeedCard  key={idx}
+            publicUrl={song.publicUrl}
+            storagePath={song.storagePath}
+            photo={photo}
+            location={location}
+            title={song.title}
+            lyrics={song.lyrics}
+            artist={artist}
+            id={song.user_id}
+            handleDeleteSong={handleDeleteSong}/>
           ))}
         </div>
       </div>

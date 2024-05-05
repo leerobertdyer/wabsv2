@@ -3,7 +3,7 @@ import { FaCameraRetro } from "react-icons/fa";
 import InputField from "../../Components/InputField/InputField";
 import Button from "../../Components/Button/Button";
 import { Link } from "react-router-dom";
-import { getUrlFromSupabaseFile, uploadPhotoToSupabase } from "./helpers";
+import { uploadPhotoToSupabase } from "./helpers";
 
 type PropsDefinition = {
     photo: string
@@ -32,11 +32,8 @@ export default function SignupBasicInfo(props: PropsDefinition) {
         if (!e.target.files) return;
         const file = e.target.files[0];
         if (file) {
-          const data = await uploadPhotoToSupabase(file, artistName);
-          console.log(data)
-          if (data) 
-            {
-             const { publicUrl } = getUrlFromSupabaseFile('profile_photos', data.path)
+          const publicUrl = await uploadPhotoToSupabase(file, artistName);
+          if (publicUrl) {
               setPhoto(publicUrl);
             }
         }
@@ -58,13 +55,13 @@ export default function SignupBasicInfo(props: PropsDefinition) {
           }
         if (!photo) 
           {
+            window.scrollTo({top: 0, behavior: 'smooth'})
             alert("Please upload a photo")
             return
           }
         if (!handleConfirmPassword(passwordConfirm)) return;
         setFormPage(2);
       }
-    
       return (
         <>
           <div className="pt-5 w-[22rem] pb-[7rem] flex flex-col items-center m-auto">

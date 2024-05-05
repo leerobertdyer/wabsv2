@@ -7,17 +7,22 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { submitSong } from "./helpers";
 import { supabase } from "../../supabaseClient";
+import Loading from "../../Components/Loading/Loading";
 
 type PropsDefinition = {
   artistName: string
+  photo: string;
+  location: string;
 }
 
-export default function SubmitSong({artistName}: PropsDefinition) {
+export default function SubmitSong({artistName, location, photo}: PropsDefinition) {
   const [songTitle, setSongTitle] = useState("");
   const [lyrics, setLyrics] = useState("");
   const [music, setMusic] = useState("");
+  const [storagePath, setStoragePath] = useState("");
   const [success, setSuccess] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Trigger audio input
   function onMusicIconClick() {
@@ -27,18 +32,22 @@ export default function SubmitSong({artistName}: PropsDefinition) {
   // Upload Audio File
   async function handleUploadAudio(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
+    setIsLoading(true);
     const file = e.target.files[0];
     const fileName = artistName + Date.now()
     const {data, error} = await supabase.storage.from("songs").upload(`/${fileName}`, file);
     if (error) {
       alert(`Audio upload failed. Please try again. ${error.message}`);
+      setIsLoading(false);
       return;
     }
+    if (data.path) setStoragePath(data.path)
     if (data)
       {
         const {data} = supabase.storage.from("songs").getPublicUrl(`/${fileName}`);
         if (!data.publicUrl) return alert("Error getting public URL")
         setMusic(data.publicUrl);
+      setIsLoading(false);
       }
   }
   
@@ -48,19 +57,28 @@ export default function SubmitSong({artistName}: PropsDefinition) {
     submitSong({
       title: songTitle,
       lyrics: lyrics,
-      audio: music,
+      publicUrl: music,
+      storagePath: storagePath,
+      photo,
+      location,
+      artistName,
       finished: false,
     });
     setSuccess(true);
   }
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  // Handle FINISHED song submission
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!songTitle || !lyrics || !music) return;
-    submitSong({
+    await submitSong({
       title: songTitle,
       lyrics: lyrics,
-      audio: music,
+      publicUrl: music,
+      storagePath: storagePath,
+      photo,
+      location,
+      artistName,
       finished: true,
     });
     setFinished(true);
@@ -69,6 +87,7 @@ export default function SubmitSong({artistName}: PropsDefinition) {
 
   return (
     <div>
+      {isLoading && <Loading title="Uploading Audio" />}
       {success ? (
         <div
           className="absolute w-full h-full bg-white text-wabsPurple flex flex-col gap-4 justify-start items-center pt-6"

@@ -21,7 +21,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [location, setLocation] = useState("");
-  const [reminderStyle, setReminderStyle] = useState("");
+  const [monthlyReminder, setMonthlyReminder] = useState(false);
   const [formPage, setFormPage] = useState(1);
   const [success, setSuccess] = useState(false);
 
@@ -36,7 +36,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
       genre,
       phoneNumber,
       location,
-      reminderStyle,
+      monthlyReminder,
     });
     getProfile();
     setSuccess(true);
@@ -67,7 +67,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
             />
           ) : (
             <>
-              <SignupPage2 setReminderStyle={setReminderStyle} />
+              <SignupPage2 monthlyReminder={monthlyReminder} setMonthlyReminder={setMonthlyReminder} />
               <div className="w-[22rem] m-auto flex justify-center">
                 <Button
                   role="primary"

@@ -35,7 +35,8 @@ async function getProfile() {
     .select("*")
     .eq("user_id", user_id);
   if (profile.error) {
-    alert(`Error fetching profile: ${profile.error.message}`);
+    console.log(`Error fetching profile: ${profile.error.message}`);
+    return
   }
   if (profile.data) {
     setPhoto(profile.data[0].photo);
@@ -68,7 +69,7 @@ async function getProfile() {
             }
           />
           <Route path="/songs" Component={Songs} />
-          <Route path="/submit-song" element={<SubmitSong artistName={artistName} />} />
+          <Route path="/submit-song" element={<SubmitSong artistName={artistName} photo={photo} location={location}/>} />
           <Route path="/feed" Component={Feed} />
           <Route path="/contact" Component={Contact} />
         </Routes>
