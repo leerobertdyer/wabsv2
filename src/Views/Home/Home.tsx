@@ -1,8 +1,19 @@
 import { Link } from "react-router-dom";
 import { FaStar, FaRegStar} from "react-icons/fa";
 import Button from "../../Components/Button/Button";
+import { useEffect } from "react";
+import { supabase } from "../../supabaseClient";
 
 export default function Home() {
+useEffect(() => {
+  async () => {
+    const { data } = await supabase.auth.getUser()
+    if (data) {
+      console.log(data)
+    }
+  }
+}, [])
+
   return (
     <div className="bg-white p-4 pb-[8rem] flex flex-col items-center">
       <div
