@@ -19,6 +19,7 @@ export default function Login({getProfile}: PropsDefinition) {
     const isLoggedIn = await validateLogin(email, password);
     if (isLoggedIn) {
       getProfile();
+      console.log('grerererere')
       navigate("/profile");
     }
   }
