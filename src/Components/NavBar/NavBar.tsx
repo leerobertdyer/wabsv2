@@ -9,7 +9,6 @@ export default function NavBar() {
 
   function toggleMenu() {
     setMenuOpen(!menuOpen);
-    // document.body.style.overflow = menuOpen ? "auto" : "hidden";
   }
 
   return (

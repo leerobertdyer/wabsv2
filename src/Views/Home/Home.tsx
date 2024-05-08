@@ -1,21 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import Button from "../../Components/Button/Button";
-import { useEffect } from "react";
-import { supabase } from "../../supabaseClient";
 
 export default function Home() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    async function checkForUserOnHomePage() {
-      const { data } = await supabase.auth.getUser();
-      if (data.user !== null) {
-        navigate("/profile");
-      }
-    }
-    checkForUserOnHomePage();
-  }, [navigate]);
 
   return (
     <div className="bg-white p-4 pb-[8rem] flex flex-col items-center">

@@ -15,6 +15,7 @@ type PropsDefinition = {
   location: string;
   phoneNumber: string;
   getProfile: () => Promise<void>;
+  handleUpdateLoginState: () => void;
 };
 
 export default function Profile({
@@ -24,6 +25,7 @@ export default function Profile({
   genre,
   location,
   phoneNumber,
+  handleUpdateLoginState
 }: PropsDefinition) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -76,13 +78,11 @@ export default function Profile({
     }
   }
 
-  async function handleLogout() {
-    const { error } = await supabase.auth.signOut();
-    navigate("/login");
-    if (error) {
-      alert(error.message);
-    }
+  function handleLogoutfromProfile() {
+    handleUpdateLoginState()
+    navigate("/login")
   }
+
 
   return (
     <div className="p-4">
@@ -188,7 +188,7 @@ export default function Profile({
             Delete Account
           </Link>
         ) : (
-          <p className="text-wabsLink hover:cursor-pointer" onClick={handleLogout}>
+          <p className="text-wabsLink hover:cursor-pointer" onClick={handleLogoutfromProfile}>
             Log Out
           </p>
         )}
