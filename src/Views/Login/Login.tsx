@@ -11,7 +11,7 @@ type PropsDefinition = {
 export default function Login({getProfile}: PropsDefinition) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [rememberMe, setRememberMe] = useState(false);
+  
   const navigate = useNavigate();
 
   async function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -44,11 +44,6 @@ export default function Login({getProfile}: PropsDefinition) {
             placeholder="*****"
             labelName="Password"
             onChange={(e) => setPassword(e.target.value)}
-          />
-          <InputField
-            id="rememberMe"
-            type="checkbox"
-            labelName="Remember Me?"
           />
           <Button type="submit" role="primary" size="full">
             Login
