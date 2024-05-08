@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
+import WarningDialogue from "../WarningDialogue/WarningDialogue";
 
 type PropsDefinition = {
   photo: string;
@@ -27,6 +28,7 @@ export default function FeedCard(props: PropsDefinition) {
   } = props;
   const [user_id, setUser_id] = useState("");
   const [isDeleted, setIsDeleted] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   useEffect(() => {
     async function getId() {
@@ -38,12 +40,18 @@ export default function FeedCard(props: PropsDefinition) {
   }, []);
 
   function handleOnDeleteClick() {
+    setShowWarning(true);
+  }
+  
+  function handleCommitDelete() {
     setIsDeleted(true);
+    setShowWarning(false);
     handleDeleteSong(publicUrl, storagePath);
   }
 
   return (
     <>
+    {showWarning && WarningDialogue({yesCallback: handleCommitDelete, noCallback: () => setShowWarning(false)})}
       {!isDeleted ?
 
       <div className="flex flex-col gap-2 p-4 border border-black rounded-lg w-[99%] overflow-hidden max-w-[25rem] m-auto">
