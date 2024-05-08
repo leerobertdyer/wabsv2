@@ -18,6 +18,7 @@ export default function Home() {
           <h1>We can't all be Mozart,</h1>
           <p className="pb-2">
             Let's write a {" "}
+            HERE IS A SONG FOR YOU 
             <span className="line-through">bad</span> song.
           </p>
         </div>
