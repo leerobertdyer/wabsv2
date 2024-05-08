@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
-import { FaRegStar } from "react-icons/fa";
+import { FaStar, FaRegStar} from "react-icons/fa";
 import Button from "../../Components/Button/Button";
 
 export default function Home() {
@@ -18,7 +17,6 @@ export default function Home() {
           <h1>We can't all be Mozart,</h1>
           <p className="pb-2">
             Let's write a {" "}
-            HERE IS A SONG FOR YOU You sassy beeeeast!!!!
             <span className="line-through">bad</span> song.
           </p>
         </div>
