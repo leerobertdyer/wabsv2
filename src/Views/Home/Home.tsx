@@ -32,6 +32,7 @@ export default function Home() {
         <p className="text-2xl pt-2">Writing is a muscle...<br/>And bad songs are the weights that create metaphorical six packs.</p>
         <p className="text-xs pt-2 text-[#737373]">
           Write a bad song, so when a good song comes you're ready!
+          He's an animALLL!
         </p>
         <div
           className="overflow-hidden h-[235px] min-h-[13rem] mt-4 w-full flex flex-col  justify-start items-center"
