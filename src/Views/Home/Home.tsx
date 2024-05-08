@@ -1,18 +1,21 @@
-import { Link } from "react-router-dom";
-import { FaStar, FaRegStar} from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaStar, FaRegStar } from "react-icons/fa";
 import Button from "../../Components/Button/Button";
 import { useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 
 export default function Home() {
-useEffect(() => {
-  async () => {
-    const { data } = await supabase.auth.getUser()
-    if (data) {
-      console.log(data)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkForUserOnHomePage() {
+      const { data } = await supabase.auth.getUser();
+      if (data.user !== null) {
+        navigate("/profile");
+      }
     }
-  }
-}, [])
+    checkForUserOnHomePage();
+  }, [navigate]);
 
   return (
     <div className="bg-white p-4 pb-[8rem] flex flex-col items-center">
@@ -27,20 +30,23 @@ useEffect(() => {
         <div className="bg-white text-3xl text-wabsSecondary w-full">
           <h1>We can't all be Mozart,</h1>
           <p className="pb-2">
-            Let's write a {" "}
-            <span className="line-through">bad</span> song.
+            Let's write a <span className="line-through">bad</span> song.
           </p>
         </div>
       </div>
       <div className="w-[22rem] ">
-          <Link to="/login">
-        <Button role="primary" size="full">
-        Login
-        </Button>
-          </Link>
+        <Link to="/login">
+          <Button role="primary" size="full">
+            Login
+          </Button>
+        </Link>
       </div>
       <div className="p-5 flex flex-col align-center justify-center">
-        <p className="text-2xl pt-2">Writing is a muscle...<br/>And bad songs are the weights that create metaphorical six packs.</p>
+        <p className="text-2xl pt-2">
+          Writing is a muscle...
+          <br />
+          And bad songs are the weights that create metaphorical six packs.
+        </p>
         <p className="text-xs pt-2 text-[#737373]">
           Write a bad song, so when a good song comes you're ready!
         </p>
@@ -52,13 +58,13 @@ useEffect(() => {
             backgroundPosition: "center",
           }}
         ></div>
-              <div className="w-[22rem] py-3 h-fit">
+        <div className="w-[22rem] py-3 h-fit">
           <Link to="/login">
-        <Button role="primary" size="full">
-        Go
-        </Button>
+            <Button role="primary" size="full">
+              Go
+            </Button>
           </Link>
-      </div>
+        </div>
         <div className="flex flex-col">
           <div className="flex mt-2">
             <FaStar size={23} fill="#0075B2" />

@@ -38,7 +38,6 @@ export default function Profile({
   useEffect(() => {
     async function setUpProfile() {
       const user = await supabase.auth.getUser();
-      console.log(user);
       if (user.data.user === null) navigate("/login");
       if (user.data?.user?.id) {
         const user_id = user.data.user.id;
