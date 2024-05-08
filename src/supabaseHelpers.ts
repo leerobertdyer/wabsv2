@@ -28,7 +28,6 @@ async function updateSupabaseColumn(
 async function deleteASong(publicUrl: string, storagePath: string) {
   //Delete from the table
   try {
-    console.log("starting to delete");
     const { error } = await supabase
       .from("songs")
       .delete()
