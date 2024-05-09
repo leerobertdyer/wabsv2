@@ -7,7 +7,7 @@ type PropsDefinition = {
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
-  value: string;
+  value?: string;
 };
 
 export default function InputField(props: PropsDefinition) {
