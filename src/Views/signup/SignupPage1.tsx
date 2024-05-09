@@ -64,7 +64,7 @@ export default function SignupBasicInfo(props: PropsDefinition) {
       }
       return (
         <>
-          <div className="pt-5 w-[22rem] pb-[7rem] flex flex-col items-center m-auto">
+          <div className="pt-5 w-[22rem] pb-[10rem] flex flex-col items-center mx-auto">
             <h1 className="text-2xl pb-3 font-bold">Your Info</h1>
               <div
                 className="

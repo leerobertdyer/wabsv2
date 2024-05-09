@@ -22,7 +22,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [location, setLocation] = useState("");
   const [monthlyReminder, setMonthlyReminder] = useState(true);
-  const [formPage, setFormPage] = useState(1);
+  const [formPage, setFormPage] = useState(2);
   const [success, setSuccess] = useState(false);
 
   async function handleSignupSubmit() {
@@ -66,7 +66,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
           ) : (
             <>
               <SignupPage2 monthlyReminder={monthlyReminder} setMonthlyReminder={setMonthlyReminder} />
-              <div className="w-[22rem] m-auto flex justify-center">
+              <div className="w-[22rem] pb-[10rem] m-auto flex justify-center">
                 <Button
                   role="primary"
                   size="medium"
