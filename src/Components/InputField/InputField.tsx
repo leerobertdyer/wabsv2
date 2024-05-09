@@ -7,6 +7,7 @@ type PropsDefinition = {
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  value?: string;
 };
 
 export default function InputField(props: PropsDefinition) {
@@ -32,6 +33,7 @@ export default function InputField(props: PropsDefinition) {
         onChange={props.onChange}
         required={props.required}
         placeholder={props.placeholder}
+        value={props.value}
       />
     </div>
   );

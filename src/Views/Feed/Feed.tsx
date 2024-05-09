@@ -7,11 +7,12 @@ type Song = {
   user_id: string;
   title: string;
   lyrics: string;
-  artist: string;
+  artistName: string;
   location: string;
   photo: string;
   publicUrl: string;
   storagePath: string;
+  id: number;
   finished: boolean;
 };
 
@@ -19,7 +20,6 @@ export default function Feed() {
   const [songs, setSongs] = useState<Song[]>([]);
 
   useEffect(() => {
-
     getSongs();
   }, []);
 
@@ -54,8 +54,9 @@ export default function Feed() {
           location={song.location}
           title={song.title}
           lyrics={song.lyrics}
-          artist={song.artist}
-          id={song.user_id}
+          artist={song.artistName}
+          song_id={song.id}
+          user_id={song.user_id}
         />
       ))}
     </div>

@@ -74,7 +74,8 @@ export default function Songs() {
             title={song.title}
             lyrics={song.lyrics}
             artist={artist}
-            id={song.user_id}
+            user_id={song.user_id}
+            song_id={song.id}
             handleDeleteSong={handleDeleteSong}/>
           ))}
         </div>
@@ -89,7 +90,8 @@ export default function Songs() {
             title={song.title}
             lyrics={song.lyrics}
             artist={artist}
-            id={song.user_id}
+            user_id={song.user_id}
+            song_id={song.id}
             handleDeleteSong={handleDeleteSong}/>
           ))}
         </div>
