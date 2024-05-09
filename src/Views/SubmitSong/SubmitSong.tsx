@@ -44,7 +44,6 @@ export default function SubmitSong({
     setStoragePath(urlParams.get("storagePath") || "");
     setSongId(Number(urlParams.get("song_id")) || undefined);
     setIsUpdating(true);
-    console.log(urlParams.get("song_id"))
   }, [windowLocation.search]);
 
   // Trigger audio input
@@ -79,10 +78,8 @@ export default function SubmitSong({
 
   // Handle UNFINISHED song submission
   function onSaveClick() {
-    console.log("Unfinished Song Submission")
     if (!songTitle) return;
     if (isUpdating && song_id) {
-      console.log("Updating Song")
       updateSong({
         title: songTitle,
         lyrics: lyrics,
@@ -95,7 +92,6 @@ export default function SubmitSong({
         finished: false,
       });
     } else {
-      console.log("Submitting Song")
       submitSong({
         title: songTitle,
         lyrics: lyrics,
@@ -115,10 +111,7 @@ export default function SubmitSong({
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!songTitle || !lyrics || !music) return;
-    console.log("Finished Song Submission")
-    console.log(isUpdating, song_id)
     if (isUpdating && song_id) {
-      console.log("Updating Song")
       updateSong({
         title: songTitle,
         lyrics: lyrics,
@@ -131,7 +124,6 @@ export default function SubmitSong({
         song_id: song_id
       })
     } else {
-      console.log("Submitting Song")
       submitSong({
         title: songTitle,
         lyrics: lyrics,

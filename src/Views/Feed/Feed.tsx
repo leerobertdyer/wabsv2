@@ -34,7 +34,6 @@ export default function Feed() {
     }
     if (data) {
       setSongs(data);
-      console.log(data);
     }
   }
 

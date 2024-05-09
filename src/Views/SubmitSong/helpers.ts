@@ -40,7 +40,6 @@ async function updateSong(props: SubmitSongs) {
 
 async function submitSong(props: SubmitSongs) {
   const { title, lyrics, publicUrl, finished, storagePath, photo, location, artistName } = props;
-  console.log(photo, location, artistName)
   const user = await supabase.auth.getUser();
   if (user.data?.user?.id) {
     const user_id = user.data.user.id;
