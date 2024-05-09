@@ -6,13 +6,11 @@ export default function EmailNotification() {
 
     useEffect(() => {
     async function getSubscribers() {
-        const { data } = await supabase.from('profiles').select('user_id').eq('monthly_reminder', true)
+        const { data } = await supabase.from('users').select('email').eq('monthly_reminder', true)
         if (data) {
-            const user1 = await supabase.from('auth.users').select('email').eq('id', data[0].user_id)
-            console.log(user1)
             console.log(data)
-            console.log(emails)
-            setEmails([])
+            const nextEmails = data.map((user: {email: string}) => user.email)
+            setEmails(nextEmails)
         }
     }
     getSubscribers()
@@ -20,7 +18,7 @@ export default function EmailNotification() {
 
   return (
     <div>
-      <h1>Emails sent!</h1>
+      <h1>{emails.length} {emails.length > 1 ? 'Emails' : "Email"} sent!</h1>
     </div>
   );
 }
