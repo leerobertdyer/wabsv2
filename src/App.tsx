@@ -13,7 +13,6 @@ import Feed from "./Views/Feed/Feed";
 import { useEffect, useState } from "react";
 import { HandleLogout } from "./supabaseHelpers";
 import EmailNotification from "./Components/EmailNotification/EmailNotification";
-import TextNotification from "./Components/TextNotification/TextNotification";
 
 function App() {
   const [photo, setPhoto] = useState("");
@@ -84,7 +83,6 @@ function handleUpdateLoginState() {
           <Route path="/login" element={<Login getProfile={getProfile} />} />
           <Route path="/signup" element={<Signup getProfile={getProfile} />} />
           <Route path="/send-email" element={<EmailNotification />} />
-          <Route path="/send-text" element={<TextNotification />} />
           <Route
             path="/profile"
             element={
