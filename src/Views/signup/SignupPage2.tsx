@@ -19,7 +19,7 @@ export default function SignupPage2({ setMonthlyReminder, monthlyReminder }: Pro
           <label className="flex items-center gap-2">
             Recieve e-mail:
             <Toggle
-              defaultChecked={false}
+              defaultChecked={true}
               icons={{
                 checked: null,
                 unchecked: null,

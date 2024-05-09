@@ -12,6 +12,7 @@ import { supabase } from "./supabaseClient";
 import Feed from "./Views/Feed/Feed";
 import { useEffect, useState } from "react";
 import { HandleLogout } from "./supabaseHelpers";
+import EmailNotification from "./Components/EmailNotification/EmailNotification";
 
 function App() {
   const [photo, setPhoto] = useState("");
@@ -20,7 +21,6 @@ function App() {
   const [location, setLocation] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
 
   useEffect(() => {
     getProfile();
@@ -32,7 +32,7 @@ function App() {
     const user_id = data.user.id;
 
     const profile = await supabase
-      .from("profiles")
+      .from("users")
       .select("*")
       .eq("user_id", user_id);
     if (profile.error) {
@@ -82,6 +82,7 @@ function handleUpdateLoginState() {
           />
           <Route path="/login" element={<Login getProfile={getProfile} />} />
           <Route path="/signup" element={<Signup getProfile={getProfile} />} />
+          <Route path="/send-email" element={<EmailNotification />} />
           <Route
             path="/profile"
             element={

@@ -3,7 +3,7 @@ import Button from "../../Components/Button/Button";
 import SignupPage1 from "./SignupPage1";
 import SignupPage2 from "./SignupPage2";
 import SignupSuccess from "./SignupSuccess";
-import { signupWithSupabase, storeAdditionalUserData } from "./helpers";
+import { signupWithSupabase } from "./helpers";
 
 type PropsDefinition = {
   getProfile: () => void;
@@ -21,16 +21,14 @@ export default function Signup({ getProfile }: PropsDefinition) {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [location, setLocation] = useState("");
-  const [monthlyReminder, setMonthlyReminder] = useState(false);
+  const [monthlyReminder, setMonthlyReminder] = useState(true);
   const [formPage, setFormPage] = useState(1);
   const [success, setSuccess] = useState(false);
 
   async function handleSignupSubmit() {
     await signupWithSupabase({
       email,
-      password
-    });
-    await storeAdditionalUserData({
+      password,
       photo,
       artistName,
       genre,
