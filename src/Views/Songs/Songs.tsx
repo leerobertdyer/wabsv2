@@ -35,7 +35,7 @@ export default function Songs() {
         setSongs(nextSongs);
         setUnfinishedSongs(nextUnfinishedSongs);
       }
-      const {data: profileData} = await supabase.from("profiles").select("*").eq("user_id", user_id).single();  
+      const {data: profileData} = await supabase.from("users").select("*").eq("user_id", user_id).single();  
       if (profileData)
         {
           setPhoto(profileData.photo); 
