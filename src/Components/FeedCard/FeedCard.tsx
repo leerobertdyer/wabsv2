@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import WarningDialogue from "../WarningDialogue/WarningDialogue";
+import { useNavigate } from "react-router-dom";
 
 type PropsDefinition = {
   photo: string;
@@ -10,7 +11,8 @@ type PropsDefinition = {
   lyrics: string;
   publicUrl: string;
   storagePath: string;
-  id: string;
+  user_id: string;
+  song_id: number;
   handleDeleteSong: (publicUrl: string, storagePath: string) => Promise<void>;
 };
 
@@ -23,18 +25,21 @@ export default function FeedCard(props: PropsDefinition) {
     lyrics,
     publicUrl,
     storagePath,
-    id,
+    user_id,
+    song_id,
     handleDeleteSong,
   } = props;
-  const [user_id, setUser_id] = useState("");
+  const [currentUserId, setCurrentUserId] = useState("");
   const [isDeleted, setIsDeleted] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function getId() {
       //get the user
       const { data } = await supabase.auth.getUser();
-      if (data.user) setUser_id(data.user.id);
+      if (data.user) setCurrentUserId(data.user.id);
     }
     getId();
   }, []);
@@ -49,13 +54,19 @@ export default function FeedCard(props: PropsDefinition) {
     handleDeleteSong(publicUrl, storagePath);
   }
 
+  function handleOnEditClick() {
+    if (!song_id) return;
+    const url = `/submit-song?edit=true&photo=${photo}&artist=${artist}&location=${location}&title=${title}&lyrics=${lyrics}&publicUrl=${publicUrl}&storagePath=${storagePath}&user_id=${user_id}&song_id=${song_id}`;
+    navigate(url)
+  }
+
   return (
     <>
     {showWarning && WarningDialogue({yesCallback: handleCommitDelete, noCallback: () => setShowWarning(false)})}
       {!isDeleted ?
 
       <div className="flex flex-col gap-2 p-4 border border-black rounded-lg w-[99%] overflow-hidden max-w-[25rem] m-auto">
-        {user_id === id && (
+        {currentUserId === user_id && (
           <div className="relative">
             <div
               className="absolute right-0 hover:text-red-600 hover:cursor-pointer"
@@ -73,7 +84,7 @@ export default function FeedCard(props: PropsDefinition) {
           />
           <div className="p-2">
             <h2>{artist}</h2>
-            <h3>{location}</h3>
+            <h3 className="text-wabsPurple"><span className="px-2 text-xs">from</span>{location}</h3>
           </div>
         </div>
         <div className="bg-wabsPurple p-4 rounded-full">
@@ -87,6 +98,16 @@ export default function FeedCard(props: PropsDefinition) {
             {lyrics}
           </pre>
         </details>
+        {currentUserId === user_id && (
+          <div className="relative">
+            <div
+              className="absolute right-0 bottom-0 text-wabsPurple hover:text-wabsLink hover:cursor-pointer"
+              onClick={() => handleOnEditClick()}
+            >
+              Edit
+            </div>
+          </div>
+        )}
       </div>
       : null}
     </>
