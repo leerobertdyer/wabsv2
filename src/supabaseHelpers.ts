@@ -55,7 +55,6 @@ async function deleteASong(publicUrl: string, storagePath: string) {
   }
 }
 
-
 async function HandleLogout() {
   const { error } = await supabase.auth.signOut();
   if (error) {
@@ -63,4 +62,34 @@ async function HandleLogout() {
   }
 }
 
-export { updateSupabaseColumn, deleteASong, HandleLogout };
+async function getSubscribers() {
+  const { data } = await supabase
+    .from("users")
+    .select("email")
+    .eq("monthly_reminder", true);
+  if (data) {
+    return data.map((user: { email: string }) => user.email);
+  }
+}
+
+async function sendEmails( emails: string[]) {
+  try {
+    console.log("Sending emails to", emails);
+    const resp = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/monthly-email`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emails }),
+      }
+    );
+    if (resp) {
+      const data = await resp.json();
+      console.log(data);
+    }
+  } catch (error) { 
+    console.error("Error fetching subscribers", error);
+  }
+}
+
+export { updateSupabaseColumn, deleteASong, HandleLogout, getSubscribers, sendEmails };
