@@ -1,3 +1,4 @@
+import { Subscribers } from "./Components/EmailNotification/EmailNotification";
 import { supabase } from "./supabaseClient";
 
 async function updateSupabaseColumn(
@@ -65,31 +66,44 @@ async function HandleLogout() {
 async function getSubscribers() {
   const { data } = await supabase
     .from("users")
-    .select("email")
+    .select("*")
     .eq("monthly_reminder", true);
   if (data) {
-    return data.map((user: { email: string }) => user.email);
+    return data.map((user) => {
+      return {
+        email: user.email,
+        artist_name: user.artist_name,
+      };
+    });
   }
 }
 
-async function sendEmails( emails: string[]) {
-  try {
-    console.log("Sending emails to", emails);
-    const resp = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/monthly-email`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emails }),
+async function sendEmails(subscribers: Subscribers[], emailType: string) {
+  if (emailType === "monthly") {
+    try {
+      console.log("Sending emails to", subscribers);
+      const resp = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/monthly-email`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subscribers }),
+        }
+      );
+      if (resp) {
+        const data = await resp.json();
+        console.log(data);
       }
-    );
-    if (resp) {
-      const data = await resp.json();
-      console.log(data);
+    } catch (error) {
+      console.error("Error fetching subscribers", error);
     }
-  } catch (error) { 
-    console.error("Error fetching subscribers", error);
   }
 }
 
-export { updateSupabaseColumn, deleteASong, HandleLogout, getSubscribers, sendEmails };
+export {
+  updateSupabaseColumn,
+  deleteASong,
+  HandleLogout,
+  getSubscribers,
+  sendEmails,
+};

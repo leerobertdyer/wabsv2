@@ -1,28 +1,33 @@
 import { useEffect, useState } from "react";
 import { getSubscribers, sendEmails } from "../../supabaseHelpers";
 
+export type Subscribers = {
+  email: string;
+  artist_name: string;
+}
+
 export default function EmailNotification() {
-  const [emails, setEmails] = useState<string[]>([]);
+  const [subscribers, setSubscribers] = useState<Subscribers[]>([]);
 
   useEffect(() => {
-    async function fetchSubscribersAndSendEmails() {
-      const nextEmails = await getSubscribers();
-      if (nextEmails) setEmails(nextEmails);
+    async function fetchSubscribers() {
+      const nextSubscribers = await getSubscribers();
+      if (nextSubscribers) setSubscribers(nextSubscribers);
     }
-    fetchSubscribersAndSendEmails();
+    fetchSubscribers();
   }, []);
 
   useEffect(() => {
-    if (emails.length > 0) {
-      sendEmails(emails);
+    if (subscribers.length > 0) {
+      sendEmails(subscribers, "monthly");
     }
-  }, [emails]);
+  }, [subscribers]);
 
 
   return (
   <div>
   <h1>
-  {emails.length} {emails.length > 1 ? "Emails" : "Email"} sent!
+  {subscribers.length} {subscribers.length > 1 ? "Emails" : "Email"} sent!
       </h1>
     </div>
   );
