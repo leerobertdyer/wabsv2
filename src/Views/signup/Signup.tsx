@@ -4,6 +4,7 @@ import SignupPage1 from "./SignupPage1";
 import SignupPage2 from "./SignupPage2";
 import SignupSuccess from "./SignupSuccess";
 import { signupWithSupabase } from "./helpers";
+import Loading from "../../Components/Loading/Loading";
 
 type PropsDefinition = {
   getProfile: () => void;
@@ -24,6 +25,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
   const [monthlyReminder, setMonthlyReminder] = useState(true);
   const [formPage, setFormPage] = useState(1);
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSignupSubmit() {
     await signupWithSupabase({
@@ -42,6 +44,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
 
   return (
     <>
+    {isLoading && <Loading title="Uploading Song" />}
       {success ? (
         <SignupSuccess />
       ) : (
@@ -62,6 +65,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
               setPasswordConfirm={setPasswordConfirm}
               setLocation={setLocation}
               setFormPage={setFormPage}
+              setIsLoading={setIsLoading}
             />
           ) : (
             <>

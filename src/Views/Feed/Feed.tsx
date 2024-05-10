@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FeedCard from "../../Components/FeedCard/FeedCard";
 import { supabase } from "../../supabaseClient";
 import { deleteASong } from "../../supabaseHelpers";
+import { useNavigate } from "react-router-dom";
 
 type Song = {
   user_id: string;
@@ -16,8 +17,19 @@ type Song = {
   finished: boolean;
 };
 
-export default function Feed() {
+type PropsDefinition = {
+  isLoggedIn: boolean;
+};
+
+export default function Feed({isLoggedIn}: PropsDefinition) {
   const [songs, setSongs] = useState<Song[]>([]);
+
+  const navigate = useNavigate()
+  
+  useEffect(() => {
+    if (!isLoggedIn) navigate("/login")
+  }, [isLoggedIn, navigate])
+
 
   useEffect(() => {
     getSongs();

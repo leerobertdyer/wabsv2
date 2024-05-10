@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from "../../Components/Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { deleteASong } from "../../supabaseHelpers";
 import FeedCard from "../../Components/FeedCard/FeedCard";
@@ -16,12 +16,22 @@ export type Song = {
   user_id: string; 
 };
 
-export default function Songs() {
+type PropsDefinition = {
+  isLoggedIn: boolean;
+}
+
+export default function Songs({isLoggedIn}: PropsDefinition) {
   const [songs, setSongs] = useState<Song[]>([]);
   const [unfinishedSongs, setUnfinishedSongs] = useState<Song[]>([]);
   const [photo, setPhoto] = useState("");
   const [location, setLocation] = useState("");
   const [artist, setArtist] = useState("");
+
+  const navigate = useNavigate()
+  
+  useEffect(() => {
+    if (!isLoggedIn) navigate("/login")
+  }, [isLoggedIn, navigate])
 
   useEffect(() => {
     document.title = "WABS - Songs";

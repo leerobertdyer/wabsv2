@@ -20,16 +20,18 @@ type PropsDefinition = {
     setPasswordConfirm: Dispatch<React.SetStateAction<string>>
     setLocation: Dispatch<React.SetStateAction<string>>
     setFormPage: Dispatch<React.SetStateAction<number>>
+    setIsLoading: Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function SignupBasicInfo(props: PropsDefinition) {
-    const {photo,artistName, email, password, passwordConfirm, setPhoto, setArtistName, setGenre, setPhoneNumber, setEmail, setPassword, setPasswordConfirm, setLocation, setFormPage } = props;
+    const {photo,artistName, email, password, passwordConfirm, setPhoto, setArtistName, setGenre, setPhoneNumber, setEmail, setPassword, setPasswordConfirm, setLocation, setFormPage, setIsLoading } = props;
     function handlePhotoDivClick() {
         document.getElementById("photo")?.click();
       }
     
       async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files) return;
+        setIsLoading(true);
         const file = e.target.files[0];
         if (file) {
           const publicUrl = await uploadPhotoToSupabase(file, artistName);
@@ -37,6 +39,7 @@ export default function SignupBasicInfo(props: PropsDefinition) {
               setPhoto(publicUrl);
             }
         }
+        setIsLoading(false);
       }
     
       function handleConfirmPassword(confirmPassword: string) {
