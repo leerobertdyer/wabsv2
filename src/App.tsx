@@ -58,7 +58,7 @@ function handleUpdateLoginState() {
   return (
     <Router>
       <div className="w-screen h-screen">
-        <NavBar />
+        <NavBar handleUpdateLoginState={handleUpdateLoginState} isLoggedIn={isLoggedIn}/>
         <Routes>
           <Route
             path="/"
