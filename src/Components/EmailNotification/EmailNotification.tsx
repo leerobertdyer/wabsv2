@@ -12,7 +12,10 @@ export default function EmailNotification() {
   useEffect(() => {
     async function fetchSubscribers() {
       const nextSubscribers = await getSubscribers();
-      if (nextSubscribers) setSubscribers(nextSubscribers);
+      if (nextSubscribers) {
+       console.log(nextSubscribers)
+        setSubscribers(nextSubscribers);
+      }
     }
     fetchSubscribers();
   }, []);
