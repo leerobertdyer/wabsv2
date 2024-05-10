@@ -4,7 +4,7 @@ import InputField from "../../Components/InputField/InputField";
 import { IoMusicalNotesOutline } from "react-icons/io5";
 import { IoMdSave } from "react-icons/io";
 import { FaCircleCheck } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { submitSong, updateSong } from "./helpers";
 import { supabase } from "../../supabaseClient";
 import Loading from "../../Components/Loading/Loading";
@@ -14,12 +14,14 @@ type PropsDefinition = {
   artistName: string;
   photo: string;
   location: string;
+  isLoggedIn: boolean;
 };
 
 export default function SubmitSong({
   artistName,
   location,
   photo,
+  isLoggedIn
 }: PropsDefinition) {
   const [songTitle, setSongTitle] = useState("");
   const [lyrics, setLyrics] = useState("");
@@ -30,6 +32,12 @@ export default function SubmitSong({
   const [finished, setFinished] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!isLoggedIn) navigate("/signup")
+    }, [isLoggedIn, navigate])
 
   const windowLocation = useLocation()
 

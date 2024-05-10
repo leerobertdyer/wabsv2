@@ -46,9 +46,9 @@ export default function Home() {
           }}
         ></div>
         <div className="w-[22rem] py-3 h-fit">
-          <Link to="/login">
+          <Link to="/submit-song">
             <Button role="primary" size="full">
-              Go
+              Write
             </Button>
           </Link>
         </div>

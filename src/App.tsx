@@ -109,6 +109,7 @@ function handleUpdateLoginState() {
                 artistName={artistName}
                 photo={photo}
                 location={location}
+                isLoggedIn={isLoggedIn}
               />
             }
           />
