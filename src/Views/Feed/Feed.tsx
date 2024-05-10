@@ -42,7 +42,7 @@ export default function Feed() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 pb-[10rem]">
       <h2 className="text-2xl font-bold">My Feed</h2>
       {songs.map((song, idx) => (
         <FeedCard
