@@ -1,4 +1,3 @@
-import { Subscribers } from "./Components/EmailNotification/EmailNotification";
 import { supabase } from "./supabaseClient";
 
 async function updateSupabaseColumn(
@@ -63,7 +62,7 @@ async function HandleLogout() {
   }
 }
 
-async function getSubscribers() {
+async function getMonthlySubscribers() {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1;
   //Get all users with monthly reminder set to true
@@ -90,32 +89,9 @@ async function getSubscribers() {
   }
 }
 
-async function sendEmails(subscribers: Subscribers[], emailType: string) {
-  if (emailType === "monthly") {
-    try {
-      console.log("Sending emails to", subscribers);
-      const resp = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/monthly-email`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subscribers }),
-        }
-      );
-      if (resp) {
-        const data = await resp.json();
-        console.log(data);
-      }
-    } catch (error) {
-      console.error("Error fetching subscribers", error);
-    }
-  }
-}
-
 export {
   updateSupabaseColumn,
   deleteASong,
   HandleLogout,
-  getSubscribers,
-  sendEmails,
+  getMonthlySubscribers,
 };

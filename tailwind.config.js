@@ -10,7 +10,8 @@ export const theme = {
       wabsLink: '#0075B2',
       wabsGray: '#7F7D7D',
       wabsGrayLight: '#E5E5E5',
-      wabsSecondary: '#413620'
+      wabsSecondary: '#413620',
+      wabsError: '#E31D1C'
     }
   },
 };

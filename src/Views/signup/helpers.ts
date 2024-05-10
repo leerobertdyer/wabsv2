@@ -10,6 +10,7 @@ type SignUpDefinition = {
   phone_number: string;
   monthly_reminder: boolean;
   notify_on_new_song: boolean;
+  reminder_type: "email" | "text" | "both" | null;
 };
 
 async function signupWithSupabase(props: SignUpDefinition) {
@@ -25,6 +26,7 @@ async function signupWithSupabase(props: SignUpDefinition) {
         photo: props.photo,
         monthly_reminder: props.monthly_reminder,
         notify_on_new_song: props.notify_on_new_song,
+        reminder_type: props.reminder_type
       },
     },
   });
