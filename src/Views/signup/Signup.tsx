@@ -27,6 +27,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notify_on_new_song, setNotifyOnNewSong] = useState(true);
+  const [reminder_type, setReminderType] = useState<"email" | "text" | "both" | null>("email");
 
   async function handleSignupSubmit() {
     await signupWithSupabase({
@@ -39,6 +40,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
       location,
       monthly_reminder,
       notify_on_new_song,
+      reminder_type
     });
     getProfile();
     setSuccess(true);
@@ -46,7 +48,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
 
   return (
     <>
-    {isLoading && <Loading title="Uploading Song" />}
+    {isLoading && formPage === 2 ? <Loading title="Uploading Song" /> : isLoading && formPage === 1 && <Loading title="Uploading Photo" />}
       {success ? (
         <SignupSuccess />
       ) : (
@@ -75,7 +77,9 @@ export default function Signup({ getProfile }: PropsDefinition) {
               monthly_reminder={monthly_reminder} 
               setMonthlyReminder={setMonthlyReminder} 
               notify_on_new_song={notify_on_new_song}
-              setNotifyOnNewSong={setNotifyOnNewSong}/>
+              setNotifyOnNewSong={setNotifyOnNewSong}
+              reminder_type={reminder_type}
+              setReminderType={setReminderType}/>
               <div className="w-[22rem] m-auto flex justify-center">
                 <Button
                   role="primary"

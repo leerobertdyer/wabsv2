@@ -13,46 +13,55 @@ export type Song = {
   lyrics: string;
   publicUrl: string;
   storagePath: string;
-  user_id: string; 
+  user_id: string;
 };
 
-type PropsDefinition = {
-  isLoggedIn: boolean;
-}
 
-export default function Songs({isLoggedIn}: PropsDefinition) {
+
+export default function Songs() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [unfinishedSongs, setUnfinishedSongs] = useState<Song[]>([]);
   const [photo, setPhoto] = useState("");
   const [location, setLocation] = useState("");
   const [artist, setArtist] = useState("");
 
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (!isLoggedIn) navigate("/login")
-  }, [isLoggedIn, navigate])
+    async function checkForUser() {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user) navigate("/login");
+    }
+    checkForUser();
+  }, [navigate]);
 
   useEffect(() => {
     document.title = "WABS - Songs";
     async function getSongs() {
-      const {data} = await supabase.auth.getUser()
+      const { data } = await supabase.auth.getUser();
       const user_id = data?.user?.id;
-      const {data: songData} = await supabase.from("songs").select("*").eq("user_id", user_id);
-      if (songData){
+      const { data: songData } = await supabase
+        .from("songs")
+        .select("*")
+        .eq("user_id", user_id);
+      if (songData) {
         const nextSongs = songData.filter((song: Song) => song.finished);
-        const nextUnfinishedSongs = songData.filter((song: Song) => !song.finished);
+        const nextUnfinishedSongs = songData.filter(
+          (song: Song) => !song.finished
+        );
         setSongs(nextSongs);
         setUnfinishedSongs(nextUnfinishedSongs);
       }
-      const {data: profileData} = await supabase.from("users").select("*").eq("user_id", user_id).single();  
-      if (profileData)
-        {
-          setPhoto(profileData.photo); 
-          setLocation(profileData.location); 
-          setArtist(profileData.artist_name)
-        } 
-
+      const { data: profileData } = await supabase
+        .from("users")
+        .select("*")
+        .eq("user_id", user_id)
+        .single();
+      if (profileData) {
+        setPhoto(profileData.photo);
+        setLocation(profileData.location);
+        setArtist(profileData.artist_name);
+      }
     }
     getSongs();
   }, []);
@@ -60,7 +69,6 @@ export default function Songs({isLoggedIn}: PropsDefinition) {
   async function handleDeleteSong(publicUrl: string, storagePath: string) {
     await deleteASong(publicUrl, storagePath);
   }
-    
 
   return (
     <div className="p-4">
@@ -76,33 +84,37 @@ export default function Songs({isLoggedIn}: PropsDefinition) {
         <h2>Songs In Progress</h2>
         <div className="flex flex-wrap w-full justify-evenly ">
           {unfinishedSongs.map((song, idx) => (
-            <FeedCard  key={idx}
-            publicUrl={song.publicUrl}
-            storagePath={song.storagePath}
-            photo={photo}
-            location={location}
-            title={song.title}
-            lyrics={song.lyrics}
-            artist={artist}
-            user_id={song.user_id}
-            song_id={song.id}
-            handleDeleteSong={handleDeleteSong}/>
+            <FeedCard
+              key={idx}
+              publicUrl={song.publicUrl}
+              storagePath={song.storagePath}
+              photo={photo}
+              location={location}
+              title={song.title}
+              lyrics={song.lyrics}
+              artist={artist}
+              user_id={song.user_id}
+              song_id={song.id}
+              handleDeleteSong={handleDeleteSong}
+            />
           ))}
         </div>
         <h3>Songs Completed</h3>
         <div className="flex flex-wrap w-full justify-evenly">
           {songs.map((song, idx) => (
-            <FeedCard  key={idx}
-            publicUrl={song.publicUrl}
-            storagePath={song.storagePath}
-            photo={photo}
-            location={location}
-            title={song.title}
-            lyrics={song.lyrics}
-            artist={artist}
-            user_id={song.user_id}
-            song_id={song.id}
-            handleDeleteSong={handleDeleteSong}/>
+            <FeedCard
+              key={idx}
+              publicUrl={song.publicUrl}
+              storagePath={song.storagePath}
+              photo={photo}
+              location={location}
+              title={song.title}
+              lyrics={song.lyrics}
+              artist={artist}
+              user_id={song.user_id}
+              song_id={song.id}
+              handleDeleteSong={handleDeleteSong}
+            />
           ))}
         </div>
       </div>

@@ -12,7 +12,7 @@ import { supabase } from "./supabaseClient";
 import Feed from "./Views/Feed/Feed";
 import { useEffect, useState } from "react";
 import { HandleLogout } from "./supabaseHelpers";
-import EmailNotification from "./Components/EmailNotification/EmailNotification";
+import Notification from "./Components/Notifications/Notifications";
 
 function App() {
   const [photo, setPhoto] = useState("");
@@ -88,7 +88,7 @@ function handleUpdateLoginState() {
           />
           <Route path="/login" element={<Login getProfile={getProfile} />} />
           <Route path="/signup" element={<Signup getProfile={getProfile} />} />
-          <Route path="/send-email" element={<EmailNotification />} />
+          <Route path="/send-notification" element={<Notification />} />
           <Route
             path="/profile"
             element={
@@ -105,7 +105,7 @@ function handleUpdateLoginState() {
               />
             }
           />
-          <Route path="/songs" element={<Songs isLoggedIn={isLoggedIn} />} />
+          <Route path="/songs" element={<Songs />} />
           <Route
             path="/submit-song"
             element={
