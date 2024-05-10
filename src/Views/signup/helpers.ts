@@ -5,10 +5,11 @@ type SignUpDefinition = {
   password: string;
   photo: string;
   location: string;
-  artistName: string;
+  artist_name: string;
   genre: string;
-  phoneNumber: string;
-  monthlyReminder: boolean;
+  phone_number: string;
+  monthly_reminder: boolean;
+  notify_on_new_song: boolean;
 };
 
 async function signupWithSupabase(props: SignUpDefinition) {
@@ -17,12 +18,13 @@ async function signupWithSupabase(props: SignUpDefinition) {
     password: props.password,
     options: {
       data: {
-        artist_name: props.artistName,
+        artist_name: props.artist_name,
         genre: props.genre,
-        phone_number: props.phoneNumber,
+        phone_number: props.phone_number,
         location: props.location,
         photo: props.photo,
-        monthly_reminder: props.monthlyReminder,
+        monthly_reminder: props.monthly_reminder,
+        notify_on_new_song: props.notify_on_new_song,
       },
     },
   });

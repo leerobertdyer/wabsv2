@@ -7,7 +7,7 @@ import { uploadPhotoToSupabase } from "./helpers";
 
 type PropsDefinition = {
     photo: string
-    artistName: string
+    artist_name: string
     email: string
     password: string
     passwordConfirm: string
@@ -24,7 +24,7 @@ type PropsDefinition = {
 }
 
 export default function SignupBasicInfo(props: PropsDefinition) {
-    const {photo,artistName, email, password, passwordConfirm, setPhoto, setArtistName, setGenre, setPhoneNumber, setEmail, setPassword, setPasswordConfirm, setLocation, setFormPage, setIsLoading } = props;
+    const {photo, artist_name, email, password, passwordConfirm, setPhoto, setArtistName, setGenre, setPhoneNumber, setEmail, setPassword, setPasswordConfirm, setLocation, setFormPage, setIsLoading } = props;
     function handlePhotoDivClick() {
         document.getElementById("photo")?.click();
       }
@@ -34,7 +34,7 @@ export default function SignupBasicInfo(props: PropsDefinition) {
         setIsLoading(true);
         const file = e.target.files[0];
         if (file) {
-          const publicUrl = await uploadPhotoToSupabase(file, artistName);
+          const publicUrl = await uploadPhotoToSupabase(file, artist_name);
           if (publicUrl) {
               setPhoto(publicUrl);
             }
@@ -51,7 +51,7 @@ export default function SignupBasicInfo(props: PropsDefinition) {
       }
     
       function handleNextStep() {
-        if (!artistName || !email || !password)
+        if (!artist_name || !email || !password)
           {
             alert("Please fill out all required fields") 
             return;

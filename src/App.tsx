@@ -22,6 +22,7 @@ function App() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [monthly_reminder, setMonthlyReminder] = useState(false);
+  const [notify_on_new_song, setNotifyOnNewSong] = useState(false);
 
   useEffect(() => {
     getProfile();
@@ -47,6 +48,7 @@ function App() {
       setLocation(profile.data[0].location);
       setPhoneNumber(profile.data[0].phone_number);
       setMonthlyReminder(profile.data[0].monthly_reminder);
+      setNotifyOnNewSong(profile.data[0].notify_on_new_song);
       setIsLoggedIn(true);
     }
   }
@@ -75,6 +77,7 @@ function handleUpdateLoginState() {
                     phoneNumber,
                     getProfile,
                     monthly_reminder,
+                    notify_on_new_song,
                     handleUpdateLoginState
                   }}
                 />
@@ -96,6 +99,7 @@ function handleUpdateLoginState() {
                 location={location}
                 phoneNumber={phoneNumber}
                 monthly_reminder={monthly_reminder}
+                notify_on_new_song={notify_on_new_song}
                 getProfile={getProfile}
                 handleUpdateLoginState={handleUpdateLoginState}
               />

@@ -1,8 +1,8 @@
 import { RxHamburgerMenu } from "react-icons/rx";
 
 import "../../../public/mozartcolory.png";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 type PropsDefinition = {
   handleUpdateLoginState: () => void;
@@ -15,6 +15,8 @@ export default function NavBar({
 }: PropsDefinition) {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const navigate = useNavigate()
+
   function toggleMenu() {
     setMenuOpen(!menuOpen);
   }
@@ -22,6 +24,13 @@ export default function NavBar({
   function handleLogout() {
     toggleMenu();
     handleUpdateLoginState();
+  }
+
+  function handleLogoClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    setMenuOpen(false);
+    e.stopPropagation();
+    e.preventDefault();
+    navigate("/")
   }
 
   return (
@@ -34,17 +43,18 @@ export default function NavBar({
       flex 
       justify-between 
       items-center p-4"
+      onClick={() => toggleMenu()}
     >
-      <Link to="/">
         <div
           className="rounded-full h-12 w-12 z-20"
           style={{
             backgroundImage: 'url("/logo.png")',
             backgroundSize: "cover",
             backgroundPosition: "center",
+            cursor: "pointer",
           }}
+          onClick={(e) => handleLogoClick(e)}
         ></div>
-      </Link>
       {menuOpen ? (
         <div
           className="
@@ -65,7 +75,6 @@ export default function NavBar({
         >
           <p
             className="text-[3rem] absolute top-7 right-7 hover:cursor-pointer"
-            onClick={() => toggleMenu()}
           >
             x
           </p>
@@ -78,7 +87,6 @@ export default function NavBar({
             text-center p-2 
             underline text-sm"
             to="/profile"
-            onClick={() => toggleMenu()}
           >
             My Account
           </Link>
@@ -91,7 +99,6 @@ export default function NavBar({
             text-center p-2 
             underline text-sm"
             to="/songs"
-            onClick={() => toggleMenu()}
           >
             My Songs
           </Link>
@@ -104,7 +111,6 @@ export default function NavBar({
             text-center p-2 
             underline text-sm"
             to="/feed"
-            onClick={() => toggleMenu()}
           >
             My Feed
           </Link>
@@ -125,7 +131,7 @@ export default function NavBar({
           )}
         </div>
       ) : (
-        <RxHamburgerMenu className="text-3xl" onClick={() => toggleMenu()} />
+        <RxHamburgerMenu className="text-3xl hover: cursor-pointer" onClick={() => toggleMenu()} />
       )}
     </div>
   );

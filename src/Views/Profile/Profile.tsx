@@ -16,6 +16,7 @@ type PropsDefinition = {
   location: string;
   phoneNumber: string;
   monthly_reminder: boolean;
+  notify_on_new_song: boolean;
   getProfile: () => Promise<void>;
   handleUpdateLoginState: () => void;
 };
@@ -28,6 +29,7 @@ export default function Profile({
   location,
   phoneNumber,
   monthly_reminder,
+  notify_on_new_song,
   handleUpdateLoginState
 }: PropsDefinition) {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +40,7 @@ export default function Profile({
   const [newLocation, setNewLocation] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [newMonthlyReminder, setNewMonthlyReminder] = useState(monthly_reminder);
+  const [newSongSubmission, setNewSongSubmissions] = useState(notify_on_new_song);
   const [id, setId] = useState("");
 
   const navigate = useNavigate();
@@ -167,9 +170,17 @@ export default function Profile({
               />
                <label className="flex items-center gap-2">
               Monthly Reminder
-            <Toggle 
+              <Toggle 
               defaultChecked={newMonthlyReminder}
               onClick={() => {setNewMonthlyReminder(!newMonthlyReminder)}}
+              
+              />
+              </label>
+              <label className="flex items-center gap-2">
+              Song Submissions
+              <Toggle 
+              defaultChecked={newSongSubmission}
+              onClick={() => {setNewSongSubmissions(!newSongSubmission)}}
               
               />
               </label>
