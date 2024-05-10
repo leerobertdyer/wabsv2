@@ -21,6 +21,7 @@ function App() {
   const [location, setLocation] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [monthly_reminder, setMonthlyReminder] = useState(false);
 
   useEffect(() => {
     getProfile();
@@ -45,6 +46,7 @@ function App() {
       setGenre(profile.data[0].genre);
       setLocation(profile.data[0].location);
       setPhoneNumber(profile.data[0].phone_number);
+      setMonthlyReminder(profile.data[0].monthly_reminder);
       setIsLoggedIn(true);
     }
   }
@@ -72,6 +74,7 @@ function handleUpdateLoginState() {
                     location,
                     phoneNumber,
                     getProfile,
+                    monthly_reminder,
                     handleUpdateLoginState
                   }}
                 />
@@ -92,12 +95,13 @@ function handleUpdateLoginState() {
                 genre={genre}
                 location={location}
                 phoneNumber={phoneNumber}
+                monthly_reminder={monthly_reminder}
                 getProfile={getProfile}
                 handleUpdateLoginState={handleUpdateLoginState}
               />
             }
           />
-          <Route path="/songs" Component={Songs} />
+          <Route path="/songs" element={<Songs isLoggedIn={isLoggedIn} />} />
           <Route
             path="/submit-song"
             element={
@@ -108,7 +112,7 @@ function handleUpdateLoginState() {
               />
             }
           />
-          <Route path="/feed" Component={Feed} />
+          <Route path="/feed" element={<Feed isLoggedIn={isLoggedIn}/>} />
           <Route path="/contact" Component={Contact} />
         </Routes>
         {window.location.pathname !== "/contact" && <Footer />}

@@ -20,10 +20,6 @@ export default function SignupPage2({ setMonthlyReminder, monthlyReminder }: Pro
             Recieve e-mail:
             <Toggle
               defaultChecked={true}
-              icons={{
-                checked: null,
-                unchecked: null,
-              }}
               onChange={() => {setMonthlyReminder(!monthlyReminder)}}
             />
           </label>

@@ -7,6 +7,7 @@ import InputField from "../../Components/InputField/InputField";
 import Loading from "../../Components/Loading/Loading";
 import { supabase } from "../../supabaseClient";
 import { updateSupabaseColumn } from "../../supabaseHelpers";
+import Toggle from "react-toggle";
 
 type PropsDefinition = {
   photo: string;
@@ -14,6 +15,7 @@ type PropsDefinition = {
   genre: string;
   location: string;
   phoneNumber: string;
+  monthly_reminder: boolean;
   getProfile: () => Promise<void>;
   handleUpdateLoginState: () => void;
 };
@@ -25,6 +27,7 @@ export default function Profile({
   genre,
   location,
   phoneNumber,
+  monthly_reminder,
   handleUpdateLoginState
 }: PropsDefinition) {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +37,7 @@ export default function Profile({
   const [newGenre, setNewGenre] = useState("");
   const [newLocation, setNewLocation] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [newMonthlyReminder, setNewMonthlyReminder] = useState(monthly_reminder);
   const [id, setId] = useState("");
 
   const navigate = useNavigate();
@@ -53,12 +57,13 @@ export default function Profile({
   async function handleEditProfile() {
     setIsLoading(true);
     if (newArtistName)
-      updateSupabaseColumn("profiles", "artist_name", newArtistName, id);
-    if (newGenre) updateSupabaseColumn("profiles", "genre", newGenre, id);
+      updateSupabaseColumn("users", "artist_name", newArtistName, id);
+    if (newGenre) updateSupabaseColumn("users", "genre", newGenre, id);
     if (newLocation)
-      updateSupabaseColumn("profiles", "location", newLocation, id);
+      updateSupabaseColumn("users", "location", newLocation, id);
     if (newPhoneNumber)
-      updateSupabaseColumn("profiles", "phone_number", newPhoneNumber, id);
+      updateSupabaseColumn("users", "phone_number", newPhoneNumber, id);
+      updateSupabaseColumn("users", "monthly_reminder", newMonthlyReminder, id);
     getProfile();
     setIsLoading(false);
     setIsEditing(false);
@@ -160,6 +165,14 @@ export default function Profile({
                 placeholder={phoneNumber}
                 onChange={(e) => setNewPhoneNumber(e.target.value)}
               />
+               <label className="flex items-center gap-2">
+              Monthly Reminder
+            <Toggle 
+              defaultChecked={newMonthlyReminder}
+              onClick={() => {setNewMonthlyReminder(!newMonthlyReminder)}}
+              
+              />
+              </label>
             </>
           )}
           <Button

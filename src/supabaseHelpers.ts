@@ -4,7 +4,7 @@ import { supabase } from "./supabaseClient";
 async function updateSupabaseColumn(
   table: string,
   columnToUpdate: string,
-  newValue: string,
+  newValue: string | boolean,
   id: string
 ) {
   try {
