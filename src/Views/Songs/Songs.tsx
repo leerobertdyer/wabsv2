@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Button from "../../Components/Button/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
 import { deleteASong } from "../../supabaseHelpers";
 import FeedCard from "../../Components/FeedCard/FeedCard";
+import { supabase } from "../../supabaseClient";
 
 export type Song = {
   id: number;
@@ -16,8 +16,6 @@ export type Song = {
   user_id: string;
 };
 
-
-
 export default function Songs() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [unfinishedSongs, setUnfinishedSongs] = useState<Song[]>([]);
@@ -29,8 +27,8 @@ export default function Songs() {
 
   useEffect(() => {
     async function checkForUser() {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user) navigate("/login");
+      const user = await supabase.auth.getUser();
+      if (user.data.user === null) navigate("/login");
     }
     checkForUser();
   }, [navigate]);
