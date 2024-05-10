@@ -4,15 +4,27 @@ import "../../../public/mozartcolory.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function NavBar() {
+type PropsDefinition = {
+  handleUpdateLoginState: () => void;
+  isLoggedIn: boolean;
+};
+
+export default function NavBar({
+  handleUpdateLoginState,
+  isLoggedIn,
+}: PropsDefinition) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   function toggleMenu() {
     setMenuOpen(!menuOpen);
   }
 
+  function handleLogout() {
+    toggleMenu();
+    handleUpdateLoginState();
+  }
+
   return (
-    
     <div
       className="
       bg-white 
@@ -22,18 +34,17 @@ export default function NavBar() {
       flex 
       justify-between 
       items-center p-4"
-      >
+    >
       <Link to="/">
-      <div
-        className="rounded-full h-12 w-12 z-20"
-        style={{
-          backgroundImage: 'url("/logo.png")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-        >
-        </div>
-        </Link>
+        <div
+          className="rounded-full h-12 w-12 z-20"
+          style={{
+            backgroundImage: 'url("/logo.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+      </Link>
       {menuOpen ? (
         <div
           className="
@@ -59,26 +70,59 @@ export default function NavBar() {
             x
           </p>
           <Link
-            className="underline text-sm"
+            className="
+            hover:bg-wabsPurple
+            hover:cursor-pointer
+            hover:text-white 
+            w-[8rem] rounded-lg
+            text-center p-2 
+            underline text-sm"
             to="/profile"
             onClick={() => toggleMenu()}
           >
             My Account
           </Link>
           <Link
-            className="underline text-sm"
+            className="
+            hover:bg-wabsPurple
+            hover:cursor-pointer
+            hover:text-white 
+            w-[8rem] rounded-lg
+            text-center p-2 
+            underline text-sm"
             to="/songs"
             onClick={() => toggleMenu()}
           >
             My Songs
           </Link>
           <Link
-            className="underline text-sm"
+            className="
+            hover:bg-wabsPurple
+            hover:cursor-pointer
+            hover:text-white 
+            w-[8rem] rounded-lg
+            text-center p-2 
+            underline text-sm"
             to="/feed"
             onClick={() => toggleMenu()}
           >
             My Feed
           </Link>
+          {isLoggedIn && (
+            <p
+              className="
+              hover:bg-wabsPurple
+              hover:cursor-pointer
+              hover:text-white 
+              w-[8rem] 
+              text-center p-2 
+              rounded-lg 
+              underline text-sm"
+              onClick={handleLogout}
+            >
+              Logout
+            </p>
+          )}
         </div>
       ) : (
         <RxHamburgerMenu className="text-3xl" onClick={() => toggleMenu()} />
