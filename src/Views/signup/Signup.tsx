@@ -15,28 +15,30 @@ export default function Signup({ getProfile }: PropsDefinition) {
     const storedPhotoUrl = localStorage.getItem("photoUrl");
     return storedPhotoUrl ? storedPhotoUrl : "";
   });
-  const [artistName, setArtistName] = useState("");
+  const [artist_name, setArtistName] = useState("");
   const [genre, setGenre] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone_number, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [location, setLocation] = useState("");
-  const [monthlyReminder, setMonthlyReminder] = useState(true);
+  const [monthly_reminder, setMonthlyReminder] = useState(true);
   const [formPage, setFormPage] = useState(1);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [notify_on_new_song, setNotifyOnNewSong] = useState(true);
 
   async function handleSignupSubmit() {
     await signupWithSupabase({
       email,
       password,
       photo,
-      artistName,
+      artist_name,
       genre,
-      phoneNumber,
+      phone_number,
       location,
-      monthlyReminder,
+      monthly_reminder,
+      notify_on_new_song,
     });
     getProfile();
     setSuccess(true);
@@ -53,7 +55,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
             <SignupPage1
               photo={photo}
               setPhoto={setPhoto}
-              artistName={artistName}
+              artist_name={artist_name}
               setArtistName={setArtistName}
               setGenre={setGenre}
               setPhoneNumber={setPhoneNumber}
@@ -69,7 +71,11 @@ export default function Signup({ getProfile }: PropsDefinition) {
             />
           ) : (
             <>
-              <SignupPage2 monthlyReminder={monthlyReminder} setMonthlyReminder={setMonthlyReminder} />
+              <SignupPage2 
+              monthly_reminder={monthly_reminder} 
+              setMonthlyReminder={setMonthlyReminder} 
+              notify_on_new_song={notify_on_new_song}
+              setNotifyOnNewSong={setNotifyOnNewSong}/>
               <div className="w-[22rem] m-auto flex justify-center">
                 <Button
                   role="primary"
