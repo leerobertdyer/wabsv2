@@ -64,17 +64,29 @@ async function HandleLogout() {
 }
 
 async function getSubscribers() {
-  const { data } = await supabase
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  //Get all users with monthly reminder set to true
+  const { data: users } = await supabase
     .from("users")
     .select("*")
     .eq("monthly_reminder", true);
-  if (data) {
-    return data.map((user) => {
-      return {
-        email: user.email,
-        artist_name: user.artist_name,
-      };
-    });
+  if (users) {
+    // Get all users who have not submitted a song this month using >= and <= (.gte and .lte)
+    const { data: songsData } = await supabase
+      .from("songs")
+      .select("user_id")
+      .gte("created_at", `${currentDate.getFullYear()}-${currentMonth}-01`)
+      .lte("created_at", currentDate.toISOString());
+    if (songsData) {
+      // Extract user_ids from songsData
+      const submittedUserIds = songsData.map((song) => song.user_id);
+      // Find users without songs submitted this month
+      const usersWithoutSongs = users.filter(
+        (user) => !submittedUserIds.includes(user.user_id)
+      );
+      return usersWithoutSongs;
+    }
   }
 }
 
