@@ -38,8 +38,9 @@ export default function SubmitSong({
     const urlParams = new URLSearchParams(window.location.search);
     const editParam = urlParams.get("edit");
     if (!editParam) return;
+    const decodedLyrics = decodeURIComponent(urlParams.get('lyrics') || "");
     setSongTitle(urlParams.get("title") || "");
-    setLyrics(urlParams.get("lyrics") || "");
+    setLyrics(decodedLyrics);
     setMusic(urlParams.get("publicUrl") || "");
     setStoragePath(urlParams.get("storagePath") || "");
     setSongId(Number(urlParams.get("song_id")) || undefined);

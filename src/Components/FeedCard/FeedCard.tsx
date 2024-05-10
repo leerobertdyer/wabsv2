@@ -56,7 +56,8 @@ export default function FeedCard(props: PropsDefinition) {
 
   function handleOnEditClick() {
     if (!song_id) return;
-    const url = `/submit-song?edit=true&photo=${photo}&artist=${artist}&location=${location}&title=${title}&lyrics=${lyrics}&publicUrl=${publicUrl}&storagePath=${storagePath}&user_id=${user_id}&song_id=${song_id}`;
+    const encodedLyrics = encodeURIComponent(lyrics);
+    const url = `/submit-song?edit=true&photo=${photo}&artist=${artist}&location=${location}&title=${title}&lyrics=${encodedLyrics}&publicUrl=${publicUrl}&storagePath=${storagePath}&user_id=${user_id}&song_id=${song_id}`;
     navigate(url)
   }
 
