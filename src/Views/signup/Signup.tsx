@@ -10,6 +10,8 @@ type PropsDefinition = {
   getProfile: () => void;
 };
 
+
+
 export default function Signup({ getProfile }: PropsDefinition) {
   const [photo, setPhoto] = useState(() => {
     const storedPhotoUrl = localStorage.getItem("photoUrl");
@@ -30,6 +32,17 @@ export default function Signup({ getProfile }: PropsDefinition) {
   const [reminder_type, setReminderType] = useState<"email" | "text" | "both" | null>("email");
 
   async function handleSignupSubmit() {
+    if (reminder_type === "text" || reminder_type === "both") {
+       if (!phone_number) {
+        alert("Please enter a phone number");
+        setFormPage(2);
+         return
+        }
+    }
+    if (!artist_name || !email || !password) {
+      alert("Please fill out all required fields");
+      return
+    }
     await signupWithSupabase({
       email,
       password,
@@ -60,7 +73,6 @@ export default function Signup({ getProfile }: PropsDefinition) {
               artist_name={artist_name}
               setArtistName={setArtistName}
               setGenre={setGenre}
-              setPhoneNumber={setPhoneNumber}
               email={email}
               setEmail={setEmail}
               password={password}
@@ -79,7 +91,10 @@ export default function Signup({ getProfile }: PropsDefinition) {
               notify_on_new_song={notify_on_new_song}
               setNotifyOnNewSong={setNotifyOnNewSong}
               reminder_type={reminder_type}
-              setReminderType={setReminderType}/>
+              setReminderType={setReminderType}
+              setPhoneNumber={setPhoneNumber}
+              />
+
               <div className="w-[22rem] m-auto flex justify-center">
                 <Button
                   role="primary"

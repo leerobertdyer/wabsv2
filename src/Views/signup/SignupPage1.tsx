@@ -14,7 +14,6 @@ type PropsDefinition = {
     setPhoto: Dispatch<React.SetStateAction<string>>
     setArtistName: Dispatch<React.SetStateAction<string>>
     setGenre: Dispatch<React.SetStateAction<string>>
-    setPhoneNumber: Dispatch<React.SetStateAction<string>>
     setEmail: Dispatch<React.SetStateAction<string>>
     setPassword: Dispatch<React.SetStateAction<string>>
     setPasswordConfirm: Dispatch<React.SetStateAction<string>>
@@ -24,7 +23,7 @@ type PropsDefinition = {
 }
 
 export default function SignupBasicInfo(props: PropsDefinition) {
-    const {photo, artist_name, email, password, passwordConfirm, setPhoto, setArtistName, setGenre, setPhoneNumber, setEmail, setPassword, setPasswordConfirm, setLocation, setFormPage, setIsLoading } = props;
+    const {photo, artist_name, email, password, passwordConfirm, setPhoto, setArtistName, setGenre, setEmail, setPassword, setPasswordConfirm, setLocation, setFormPage, setIsLoading } = props;
     function handlePhotoDivClick() {
         document.getElementById("photo")?.click();
       }
@@ -117,14 +116,6 @@ export default function SignupBasicInfo(props: PropsDefinition) {
                 labelName="Genre"
                 placeholder="Irish Sea Shanties"
                 onChange={(e) => setGenre(e.target.value)}
-              />
-              <InputField
-                id="phoneNumber"
-                type="text"
-                labelName="Phone Number"
-                placeholder="555-555-5555"
-                required
-                onChange={(e) => setPhoneNumber(e.target.value)}
               />
               <InputField
                 id="email"
