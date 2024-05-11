@@ -23,6 +23,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [monthly_reminder, setMonthlyReminder] = useState(false);
   const [notify_on_new_song, setNotifyOnNewSong] = useState(false);
+  const [reminder_type, setReminderType] = useState("");
 
   useEffect(() => {
     getProfile();
@@ -49,6 +50,7 @@ function App() {
       setPhoneNumber(profile.data[0].phone_number);
       setMonthlyReminder(profile.data[0].monthly_reminder);
       setNotifyOnNewSong(profile.data[0].notify_on_new_song);
+      setReminderType(profile.data[0].reminder_type);
       setIsLoggedIn(true);
     }
   }
@@ -76,6 +78,7 @@ function handleUpdateLoginState() {
                     location,
                     phoneNumber,
                     getProfile,
+                    reminder_type,
                     monthly_reminder,
                     notify_on_new_song,
                     handleUpdateLoginState
@@ -100,6 +103,7 @@ function handleUpdateLoginState() {
                 phoneNumber={phoneNumber}
                 monthly_reminder={monthly_reminder}
                 notify_on_new_song={notify_on_new_song}
+                reminder_type={reminder_type}
                 getProfile={getProfile}
                 handleUpdateLoginState={handleUpdateLoginState}
               />
@@ -117,7 +121,7 @@ function handleUpdateLoginState() {
               />
             }
           />
-          <Route path="/feed" element={<Feed isLoggedIn={isLoggedIn}/>} />
+          <Route path="/feed" element={<Feed />} />
           <Route path="/contact" Component={Contact} />
         </Routes>
         {window.location.pathname !== "/contact" && <Footer />}

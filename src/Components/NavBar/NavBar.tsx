@@ -22,7 +22,7 @@ export default function NavBar({
   }
 
   function handleLogout() {
-    toggleMenu();
+    setMenuOpen(false);
     handleUpdateLoginState();
   }
 
@@ -31,6 +31,12 @@ export default function NavBar({
     e.stopPropagation();
     e.preventDefault();
     navigate("/")
+  }
+
+  function handleNavBarClick() {
+    if (menuOpen) {
+      setMenuOpen(false);
+    }
   }
 
   return (
@@ -43,7 +49,7 @@ export default function NavBar({
       flex 
       justify-between 
       items-center p-4"
-      onClick={() => toggleMenu()}
+      onClick={() => handleNavBarClick()}
     >
         <div
           className="rounded-full h-12 w-12 z-20"
@@ -131,7 +137,17 @@ export default function NavBar({
           )}
         </div>
       ) : (
-        <RxHamburgerMenu className="text-3xl hover: cursor-pointer" onClick={() => toggleMenu()} />
+        <>
+        <RxHamburgerMenu className="sm:hidden text-3xl hover: cursor-pointer" onClick={() => toggleMenu()} />
+        <div className="hidden sm:flex gap-4 ">
+          <Link to="/profile" className="hover:cursor-pointer hover:text-wabsLink">My Account</Link>
+          <Link to="/songs" className="hover:cursor-pointer hover:text-wabsLink">My Songs</Link>
+          <Link to="/feed" className="hover:cursor-pointer hover:text-wabsLink">My Feed</Link>
+          {isLoggedIn && (
+            <p className="hover:cursor-pointer hover:text-wabsLink" onClick={handleLogout}>Logout</p>
+          )}
+        </div>
+        </>
       )}
     </div>
   );

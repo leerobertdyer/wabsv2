@@ -17,6 +17,7 @@ type PropsDefinition = {
   phoneNumber: string;
   monthly_reminder: boolean;
   notify_on_new_song: boolean;
+  reminder_type: string;
   getProfile: () => Promise<void>;
   handleUpdateLoginState: () => void;
 };
@@ -30,7 +31,8 @@ export default function Profile({
   phoneNumber,
   monthly_reminder,
   notify_on_new_song,
-  handleUpdateLoginState
+  reminder_type,
+  handleUpdateLoginState,
 }: PropsDefinition) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -39,11 +41,15 @@ export default function Profile({
   const [newGenre, setNewGenre] = useState("");
   const [newLocation, setNewLocation] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
-  const [newMonthlyReminder, setNewMonthlyReminder] = useState(monthly_reminder);
-  const [newSongSubmission, setNewSongSubmissions] = useState(notify_on_new_song);
+  const [newMonthlyReminder, setNewMonthlyReminder] =
+    useState(monthly_reminder);
+  const [newSongSubmission, setNewSongSubmissions] =
+    useState(notify_on_new_song);
+  const [newReminderType, setNewReminderType] = useState(reminder_type);
   const [id, setId] = useState("");
 
   const navigate = useNavigate();
+
   useEffect(() => {
     async function setUpProfile() {
       const user = await supabase.auth.getUser();
@@ -51,6 +57,15 @@ export default function Profile({
       if (user.data?.user?.id) {
         const user_id = user.data.user.id;
         setId(user_id);
+        const {data: profile} = await supabase
+          .from("users")
+          .select("*")
+          .eq("user_id", user_id);
+          if (profile) {
+        setNewMonthlyReminder(profile[0].monthly_reminder);
+        setNewSongSubmissions(profile[0].notify_on_new_song);
+        setNewReminderType(profile[0].reminder_type);
+          }
       }
       await getProfile();
     }
@@ -58,15 +73,29 @@ export default function Profile({
   }, [artistName, getProfile, navigate]);
 
   async function handleEditProfile() {
+    console.log(
+      "new values",
+      newMonthlyReminder,
+      newSongSubmission,
+      newReminderType,
+      id,
+      newArtistName,
+      newGenre,
+      newLocation,
+      newPhoneNumber
+    );
     setIsLoading(true);
     if (newArtistName)
       updateSupabaseColumn("users", "artist_name", newArtistName, id);
     if (newGenre) updateSupabaseColumn("users", "genre", newGenre, id);
-    if (newLocation)
-      updateSupabaseColumn("users", "location", newLocation, id);
+    if (newLocation) updateSupabaseColumn("users", "location", newLocation, id);
+    if (newReminderType)
+      updateSupabaseColumn("users", "reminder_type", newReminderType, id);
     if (newPhoneNumber)
       updateSupabaseColumn("users", "phone_number", newPhoneNumber, id);
-      updateSupabaseColumn("users", "monthly_reminder", newMonthlyReminder, id);
+
+    updateSupabaseColumn("users", "notify_on_new_song", newSongSubmission, id);
+    updateSupabaseColumn("users", "monthly_reminder", newMonthlyReminder, id);
     getProfile();
     setIsLoading(false);
     setIsEditing(false);
@@ -87,10 +116,9 @@ export default function Profile({
   }
 
   function handleLogoutfromProfile() {
-    handleUpdateLoginState()
-    navigate("/login")
+    handleUpdateLoginState();
+    navigate("/login");
   }
-
 
   return (
     <div className="p-4">
@@ -168,21 +196,50 @@ export default function Profile({
                 placeholder={phoneNumber}
                 onChange={(e) => setNewPhoneNumber(e.target.value)}
               />
-               <label className="flex items-center gap-2">
-              Monthly Reminder
-              <Toggle 
-              defaultChecked={newMonthlyReminder}
-              onClick={() => {setNewMonthlyReminder(!newMonthlyReminder)}}
-              
-              />
+              <label className="flex items-center gap-2">
+                Monthly Reminder
+                <Toggle
+                  defaultChecked={newMonthlyReminder}
+                  onClick={() => {
+                    setNewMonthlyReminder(!newMonthlyReminder);
+                  }}
+                />
               </label>
               <label className="flex items-center gap-2">
-              Song Submissions
-              <Toggle 
-              defaultChecked={newSongSubmission}
-              onClick={() => {setNewSongSubmissions(!newSongSubmission)}}
-              
-              />
+                Song Submissions
+                <Toggle
+                  defaultChecked={newSongSubmission}
+                  onClick={() => {
+                    setNewSongSubmissions(!newSongSubmission);
+                  }}
+                />
+              </label>
+              <label className={`flex items-center gap-2 ${newReminderType === "email" ? "bg-wabsPurple text-white rounded-lg px-4" : ""}`}>
+                <input
+                  type="radio"
+                  name="reminder_type"
+                  value="email"
+                  onChange={() => setNewReminderType("email")}
+                />
+                Email
+              </label>
+              <label className={`flex items-center gap-2 ${newReminderType === "text" ? "bg-wabsPurple text-white rounded-lg px-4" : ""}`}>
+                <input
+                  type="radio"
+                  name="reminder_type"
+                  value="text"
+                  onChange={() => setNewReminderType("text")}
+                />
+                Text
+              </label>
+              <label className={`flex items-center gap-2 ${newReminderType === "both" ? "bg-wabsPurple text-white rounded-lg px-4" : ""}`}>
+                <input
+                  type="radio"
+                  name="reminder_type"
+                  value="both"
+                  onChange={() => setNewReminderType("both")}
+                />
+                Both
               </label>
             </>
           )}
@@ -198,21 +255,26 @@ export default function Profile({
         </div>
       </div>
       <div className="py-4 mb-[8rem] flex flex-col justify-around h-fit gap-6">
-        {!isEditing && (<>
-        <h5 className="font-bold text-[1.25rem]">Your Songs</h5>
-        <p>
-          You have no songs! Go{" "}
-          <Link className="text-wabsLink" to="/submit-song">
-            Write A Bad Song!
-          </Link>
-        </p>
-        </>)}
+        {!isEditing && (
+          <>
+            <h5 className="font-bold text-[1.25rem]">Your Songs</h5>
+            <p>
+              You have no songs! Go{" "}
+              <Link className="text-wabsLink" to="/submit-song">
+                Write A Bad Song!
+              </Link>
+            </p>
+          </>
+        )}
         {isEditing ? (
           <Link className="text-wabsLink" to="/delete-account">
             Delete Account
           </Link>
         ) : (
-          <p className="text-wabsLink hover:cursor-pointer" onClick={handleLogoutfromProfile}>
+          <p
+            className="text-wabsLink hover:cursor-pointer"
+            onClick={handleLogoutfromProfile}
+          >
             Log Out
           </p>
         )}

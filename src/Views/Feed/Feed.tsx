@@ -17,19 +17,18 @@ type Song = {
   finished: boolean;
 };
 
-type PropsDefinition = {
-  isLoggedIn: boolean;
-};
-
-export default function Feed({isLoggedIn}: PropsDefinition) {
+export default function Feed() {
   const [songs, setSongs] = useState<Song[]>([]);
 
-  const navigate = useNavigate()
-  
-  useEffect(() => {
-    if (!isLoggedIn) navigate("/login")
-  }, [isLoggedIn, navigate])
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    async function checkForUser() {
+      const user = await supabase.auth.getUser();
+      if (user.data.user === null) navigate("/login");
+    }
+    checkForUser();
+  }, [navigate]);
 
   useEffect(() => {
     getSongs();
@@ -58,7 +57,7 @@ export default function Feed({isLoggedIn}: PropsDefinition) {
       <h2 className="text-2xl font-bold">My Feed</h2>
       {songs.map((song, idx) => (
         <FeedCard
-        handleDeleteSong={handleDeleteSong}
+          handleDeleteSong={handleDeleteSong}
           key={idx}
           publicUrl={song.publicUrl}
           storagePath={song.storagePath}
