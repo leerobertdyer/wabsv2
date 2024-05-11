@@ -7,13 +7,13 @@ type SubmitSongs = {
   storagePath: string;
   photo: string;
   location: string;
-  artistName: string;
+  artist_name: string;
   song_id?: number;
   finished: boolean;
 };
 
 async function updateSong(props: SubmitSongs) {
-  const { title, lyrics, publicUrl, finished, storagePath, photo, location, artistName, song_id } = props;
+  const { title, lyrics, publicUrl, finished, storagePath, photo, location, artist_name: artistName, song_id } = props;
   const user = await supabase.auth.getUser();
   if (user.data?.user?.id) {
     const user_id = user.data.user.id;
@@ -39,7 +39,7 @@ async function updateSong(props: SubmitSongs) {
 }
 
 async function submitSong(props: SubmitSongs) {
-  const { title, lyrics, publicUrl, finished, storagePath, photo, location, artistName } = props;
+  const { title, lyrics, publicUrl, finished, storagePath, photo, location, artist_name: artistName } = props;
   const user = await supabase.auth.getUser();
   if (user.data?.user?.id) {
     const user_id = user.data.user.id;

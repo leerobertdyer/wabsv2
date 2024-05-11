@@ -92,7 +92,7 @@ export default function SignupPage2({
               name="reminder_type"
               value="email"
               defaultChecked
-              onChange={(e) => setReminderType(e.target.value as "email")}
+              onChange={() => setReminderType("email")}
             />
           </label>
           <label className="flex items-center justify-end gap-2 flex-row-reverse">
@@ -101,7 +101,7 @@ export default function SignupPage2({
               type="radio"
               name="reminder_type"
               value="text"
-              onChange={(e) => setReminderType(e.target.value as "text")}
+              onChange={() => setReminderType("text")}
             />
           </label>
           <label className="flex items-center justify-end gap-2 flex-row-reverse">
@@ -110,7 +110,7 @@ export default function SignupPage2({
               type="radio"
               name="reminder_type"
               value="both"
-              onChange={(e) => setReminderType(e.target.value as "both")}
+              onChange={() => setReminderType("both")}
             />
           </label>
         </form>

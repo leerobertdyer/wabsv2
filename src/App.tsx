@@ -114,7 +114,7 @@ function handleUpdateLoginState() {
             path="/submit-song"
             element={
               <SubmitSong
-                artistName={artistName}
+                artist_name={artistName}
                 photo={photo}
                 location={location}
                 isLoggedIn={isLoggedIn}

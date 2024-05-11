@@ -1,3 +1,4 @@
+import { Subscribers } from "./Components/Notifications/Notifications";
 import { supabase } from "./supabaseClient";
 
 async function updateSupabaseColumn(
@@ -62,15 +63,25 @@ async function HandleLogout() {
   }
 }
 
-async function getMonthlySubscribers() {
+async function getAllSubscribers() {
+  const { data: users, error } = await supabase
+  .from("users")
+  .select("*")
+  .eq("monthly_reminder", true);
+  if (error) {
+    console.error("Error fetching subscribers:", error.message);
+    return;
+  }
+  if (users) {
+    return users;
+  }
+}
+
+async function getMonthlySubscribers(subscribers: Subscribers[]) {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1;
-  //Get all users with monthly reminder set to true
-  const { data: users } = await supabase
-    .from("users")
-    .select("*")
-    .eq("monthly_reminder", true);
-  if (users) {
+
+  if (subscribers) {
     // Get all users who have not submitted a song this month using >= and <= (.gte and .lte)
     const { data: songsData } = await supabase
       .from("songs")
@@ -81,7 +92,7 @@ async function getMonthlySubscribers() {
       // Extract user_ids from songsData
       const submittedUserIds = songsData.map((song) => song.user_id);
       // Find users without songs submitted this month
-      const usersWithoutSongs = users.filter(
+      const usersWithoutSongs = subscribers.filter(
         (user) => !submittedUserIds.includes(user.user_id)
       );
       return usersWithoutSongs;
@@ -94,4 +105,5 @@ export {
   deleteASong,
   HandleLogout,
   getMonthlySubscribers,
+  getAllSubscribers
 };

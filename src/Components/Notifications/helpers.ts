@@ -1,9 +1,13 @@
-import { Subscribers } from "./Notifications";
+import { Song, Subscribers } from "./Notifications";
 
 type NotificationType = "monthly" | "new_song";
 type NotificationMedium = "email" | "text" | "both";
 
-async function sendNotification(subscribers: Subscribers[], notificationType: NotificationType, notificationMedium: NotificationMedium) {
+async function sendNotification(
+  subscribers: Subscribers[], 
+  notificationType: NotificationType, 
+  notificationMedium: NotificationMedium,
+  song?: Song) {
   // const date = new Date().getDate();
   // Check if it's the 15th for monthly notifications (can later update this for user selection)
   // if (notificationType === "monthly" && date !== 15) return;
@@ -22,13 +26,16 @@ async function sendNotification(subscribers: Subscribers[], notificationType: No
       );
     }
     // Fetch all endpoints concurrently
-    const fetchPromises = endpoints.map(endpoint => (
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, {
+    const fetchPromises = endpoints.map(endpoint => {
+      const body = song ? { subscribers, song } : { subscribers };
+      console.log(`Sending ${notificationType} ${notificationMedium} notification to ${endpoint} endpoint`);
+      return fetch(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subscribers }),
-      })
-    ));
+        body: JSON.stringify(body),
+      });
+    });
+
     // Await all fetch calls to complete
     await Promise.all(fetchPromises);
   } catch (error) {
