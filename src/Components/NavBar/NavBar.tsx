@@ -22,7 +22,7 @@ export default function NavBar({
   }
 
   function handleLogout() {
-    toggleMenu();
+    setMenuOpen(false);
     handleUpdateLoginState();
   }
 

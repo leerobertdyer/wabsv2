@@ -9,8 +9,8 @@ export const button = tv({
 			secondary: 'bg-gray text-black hover:bg-black hover:text-gray border-[1px]',
 		},
 		size: {
-			small: 'text-sm w-[60%] h-[1.75rem]',
-			medium: 'text-[.875rem] w-[80%] h-[2.25rem]',
+			small: 'text-sm w-[6rem] h-[2.875rem]',
+			medium: 'text-[.875rem] w-[80%] h-[2.875rem]',
 			full: 'w-full',
 		},
 	},

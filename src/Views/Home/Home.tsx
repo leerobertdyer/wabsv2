@@ -3,30 +3,66 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import Button from "../../Components/Button/Button";
 
 export default function Home() {
-
   return (
-    <div className="bg-white p-4 pb-[8rem] flex flex-col items-center">
-      <div
-        className="overflow-hidden h-[343px] w-w[343px] flex flex-col  justify-end items-center"
-        style={{
-          backgroundImage: 'url("/mozartcolory.png")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="bg-white text-3xl text-wabsSecondary w-full">
+    <div className="bg-white p-4 pb-[8rem] flex flex-col items-center ">
+      {/* Mobile Header: We can't all be Mozart... */}
+      <div className="sm:hidden">
+        <div
+          className="overflow-hidden h-[343px] w-w[343px] flex flex-col justify-end items-center"
+          style={{
+            backgroundImage: 'url("/mozartcolory.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="bg-white text-3xl text-wabsSecondary w-full">
+            <h1>We can't all be Mozart,</h1>
+            <p className="pb-2">
+              Let's write a <span className="line-through">bad</span> song.
+            </p>
+          </div>
+        </div>
+        <div className="w-[22rem] ">
+          <Link to="/login">
+            <Button role="primary" size="full">
+              Login
+            </Button>
+          </Link>
+        </div>
+      </div>
+      {/* Desktop Header: We can't all be Mozart... */}
+      <div className="flex justify-between p-2 w-full  text-3xl text-wabsSecondary">
+        <div className="w-[26rem]">
           <h1>We can't all be Mozart,</h1>
           <p className="pb-2">
             Let's write a <span className="line-through">bad</span> song.
           </p>
+          <p className="text-[1rem]">
+            Write a <span className="crossed">bad</span>
+            song this month to keep your friends and yourself accountable.
+          </p>
+          <div className="w-full flex justify-between">
+            <Link to="/login">
+            <Button role="primary" size="small">
+              Log In
+            </Button>
+            </Link>
+            <Link to="/signup">
+              <button className="text-white bg-wabsPurple rounded-lg p-2 w-[6rem] text-[1rem]">
+                Sign Up
+              </button>
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="w-[22rem] ">
-        <Link to="/login">
-          <Button role="primary" size="full">
-            Login
-          </Button>
-        </Link>
+
+        <div
+          className="overflow-hidden h-[343px] w-[343px]"
+          style={{
+            backgroundImage: 'url("/mozartcolory.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
       </div>
       <div className="p-5 flex flex-col align-center justify-center">
         <p className="text-2xl pt-2">

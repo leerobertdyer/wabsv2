@@ -72,10 +72,6 @@ export default function Profile({
     setUpProfile();
   }, [artistName, getProfile, navigate]);
 
-  useEffect(() => {
-    console.log(newSongSubmission);
-  }, [newSongSubmission]);
-
   async function handleEditProfile() {
     console.log(
       "new values",
