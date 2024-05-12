@@ -129,7 +129,7 @@ export default function SubmitSong({
         photo,
         location,
         artist_name,
-        finished: false,
+        finished: true,
         song_id: song_id
       })
     } else {
@@ -141,7 +141,7 @@ export default function SubmitSong({
         photo,
         location,
         artist_name,
-        finished: false,
+        finished: true,
       });
     }
     setFinished(true);
