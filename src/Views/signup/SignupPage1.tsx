@@ -25,6 +25,7 @@ type PropsDefinition = {
 
 export default function SignupBasicInfo(props: PropsDefinition) {
     const {photo, artist_name, email, password, passwordConfirm, setPhoto, setArtistName, setGenre, setEmail, setPassword, setPasswordConfirm, setLocation, setFormPage, setIsLoading, setTempPhotoPath } = props;
+    
     function handlePhotoDivClick() {
         document.getElementById("photo")?.click();
       }
@@ -53,6 +54,10 @@ export default function SignupBasicInfo(props: PropsDefinition) {
       function handleConfirmPassword(confirmPassword: string) {
         if (confirmPassword !== password) {
           alert("Passwords do not match");
+          return false;
+        }
+        if (password.length < 6) {
+          alert("Password must be at least 6 characters long");
           return false;
         }
         return true;
