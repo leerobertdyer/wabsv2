@@ -6,10 +6,12 @@ import { uploadPhotoToSupabase } from "../signup/helpers";
 import InputField from "../../Components/InputField/InputField";
 import Loading from "../../Components/Loading/Loading";
 import { supabase } from "../../supabaseClient";
-import { updateSupabaseColumn } from "../../supabaseHelpers";
+import { deleteASong, updateSupabaseColumn } from "../../supabaseHelpers";
 import Toggle from "react-toggle";
 import IntlTelInput from "intl-tel-input/react";
 import "intl-tel-input/build/css/intlTelInput.css";
+import FeedCard from "../../Components/FeedCard/FeedCard";
+import WarningDialogue from "../../Components/WarningDialogue/WarningDialogue";
 
 type PropsDefinition = {
   photo: string;
@@ -22,6 +24,15 @@ type PropsDefinition = {
   reminder_type: string;
   getProfile: () => Promise<void>;
   handleUpdateLoginState: () => void;
+};
+
+export type SongFullType = {
+  id: number;
+  title: string;
+  lyrics: string;
+  publicUrl: string;
+  storagePath: string;
+  user_id: string;
 };
 
 export default function Profile({
@@ -51,6 +62,8 @@ export default function Profile({
     useState(notify_on_new_song);
   const [newReminderType, setNewReminderType] = useState(reminder_type);
   const [id, setId] = useState("");
+  const [songs, setSongs] = useState<SongFullType[]>([]);
+  const [showWarning, setShowWarning] = useState(false);
 
   const navigate = useNavigate();
 
@@ -83,6 +96,13 @@ export default function Profile({
           setNewSongSubmissions(profile[0].notify_on_new_song);
           setNewReminderType(profile[0].reminder_type);
         }
+        const { data: songs } = await supabase
+          .from("songs")
+          .select("*")
+          .eq("user_id", user_id);
+        if (songs) {
+          setSongs(songs);
+        }
       }
       await getProfile();
     }
@@ -114,7 +134,7 @@ export default function Profile({
       setIsLoading(true);
       const photoData = await uploadPhotoToSupabase(file, artistName);
       if (photoData) {
-        const publicUrl = photoData.publicUrl
+        const publicUrl = photoData.publicUrl;
         setNewPhoto(publicUrl);
         updateSupabaseColumn("profiles", "photo", publicUrl, id);
         setIsLoading(false);
@@ -127,10 +147,24 @@ export default function Profile({
     navigate("/login");
   }
 
+  async function handleDeleteSong(publicUrl: string, storagePath: string) {
+    await deleteASong(publicUrl, storagePath);
+  }
+
+  function handleClickDelete() {
+    setShowWarning(true);
+  }
+
   return (
     <div className="p-4">
+      {showWarning &&
+        WarningDialogue({
+          message: "  Are you sure you want to delete your song?",
+          yesCallback: handleClickDelete,
+          noCallback: () => setShowWarning(false),
+        })}
       {isLoading ? <Loading title="Saving Profile Info" /> : null}
-      {isEditing ? <h1>Edit Account</h1> : <h1>My Account</h1>}
+       <h1 className="text-2xl text-center p-4">{isEditing ? 'Edit Account' : 'My Account'}</h1>
       <div className="flex flex-col items-center justify-start w-[22rem] m-auto">
         <div
           className="
@@ -165,27 +199,31 @@ export default function Profile({
             </div>
           )}
         </div>
-        <div className="flex flex-col w-[22rem] m-auto items-center gap-2 py-6 my-2 rounded-lg border border-wabsPurple p-4">
-        <div className={isEditing ? "block bg-wabsPurple rounded-md p-[4px]" : "hidden"}>
-          <IntlTelInput
-                initialValue={""}
-                onChangeNumber={(e) => setValidPhoneNumber(e)}
-                onChangeValidity={(e) => setIsValid(e)}
-                onChangeErrorCode={(e) => {
-                  if (e) console.log("Error: ", e);
-                }}
-                // any initialisation options from the readme will work here
-                initOptions={{
-                  initialCountry: "us",
-                  separateDialCode: true,
-                  placeholderNumberType: "MOBILE",
-                  autoPlaceholder: "aggressive",
-                  formatAsYouType: true,
-                  formatOnDisplay: true,
-                  nationalMode: false,
-                  utilsScript: "/node_modules/intl-tel-input/build/js/utils.js",
-                }}
-              />
+        <div className="flex flex-col w-[22rem] m-auto items-center gap-2 py-6 my-6 rounded-lg border border-wabsPurple p-4">
+          <div
+            className={
+              isEditing ? "block bg-wabsPurple rounded-md p-[4px] " : "hidden"
+            }
+          >
+            <IntlTelInput
+              initialValue={""}
+              onChangeNumber={(e) => setValidPhoneNumber(e)}
+              onChangeValidity={(e) => setIsValid(e)}
+              onChangeErrorCode={(e) => {
+                if (e) console.log("Error: ", e);
+              }}
+              // any initialisation options from the readme will work here
+              initOptions={{
+                initialCountry: "us",
+                separateDialCode: true,
+                placeholderNumberType: "MOBILE",
+                autoPlaceholder: "aggressive",
+                formatAsYouType: true,
+                formatOnDisplay: true,
+                nationalMode: false,
+                utilsScript: "/node_modules/intl-tel-input/build/js/utils.js",
+              }}
+            />
           </div>
           {!isEditing ? (
             <>
@@ -218,76 +256,76 @@ export default function Profile({
                 onChange={(e) => setNewLocation(e.target.value)}
               />
               <div className="flex flex-col gap-4 border border-wabsPurple rounded-lg p-4 w-full">
-              <label className="flex items-center gap-2">
-                Monthly Reminder
-                <Toggle
-                  defaultChecked={newMonthlyReminder}
-                  onClick={() => {
-                    setNewMonthlyReminder(!newMonthlyReminder);
-                  }}
+                <label className="flex items-center gap-2">
+                  Monthly Reminder
+                  <Toggle
+                    defaultChecked={newMonthlyReminder}
+                    onClick={() => {
+                      setNewMonthlyReminder(!newMonthlyReminder);
+                    }}
                   />
-              </label>
+                </label>
 
-              <label className="flex items-center gap-2">
-                Song Submissions
-                <Toggle
-                  defaultChecked={newSongSubmission}
-                  onClick={() => {
-                    setNewSongSubmissions(!newSongSubmission);
-                  }}
+                <label className="flex items-center gap-2">
+                  Song Submissions
+                  <Toggle
+                    defaultChecked={newSongSubmission}
+                    onClick={() => {
+                      setNewSongSubmissions(!newSongSubmission);
+                    }}
                   />
-              </label>
-                  </div>
-                    <div className="flex flex-col items-center gap-4 border border-wabsPurple rounded-lg p-4 w-full">
-              <label
-                className={`flex items-center gap-2 ${
-                  newReminderType === "email"
-                  ? "bg-wabsPurple text-white rounded-lg px-4"
-                  : ""
-                }`}
+                </label>
+              </div>
+              <div className="flex flex-col items-center gap-4 border border-wabsPurple rounded-lg p-4 w-full">
+                <label
+                  className={`flex items-center gap-2 ${
+                    newReminderType === "email"
+                      ? "bg-wabsPurple text-white rounded-lg px-4"
+                      : ""
+                  }`}
                 >
-                <input
-                  type="radio"
-                  name="reminder_type"
-                  value="email"
-                  onChange={() => setNewReminderType("email")}
+                  <input
+                    type="radio"
+                    name="reminder_type"
+                    value="email"
+                    onChange={() => setNewReminderType("email")}
                   />
-                Email
-              </label>
-              <label
-                className={`flex items-center gap-2 ${
-                  newReminderType === "text"
-                  ? "bg-wabsPurple text-white rounded-lg px-4"
-                  : ""
-                }`}
+                  Email
+                </label>
+                <label
+                  className={`flex items-center gap-2 ${
+                    newReminderType === "text"
+                      ? "bg-wabsPurple text-white rounded-lg px-4"
+                      : ""
+                  }`}
                 >
-                <input
-                  type="radio"
-                  name="reminder_type"
-                  value="text"
-                  onChange={() => setNewReminderType("text")}
+                  <input
+                    type="radio"
+                    name="reminder_type"
+                    value="text"
+                    onChange={() => setNewReminderType("text")}
                   />
-                Text
-              </label>
-              <label
-                className={`flex items-center gap-2 ${
-                  newReminderType === "both"
-                  ? "bg-wabsPurple text-white rounded-lg px-4"
-                  : ""
-                }`}
+                  Text
+                </label>
+                <label
+                  className={`flex items-center gap-2 ${
+                    newReminderType === "both"
+                      ? "bg-wabsPurple text-white rounded-lg px-4"
+                      : ""
+                  }`}
                 >
-                <input
-                  type="radio"
-                  name="reminder_type"
-                  value="both"
-                  onChange={() => setNewReminderType("both")}
+                  <input
+                    type="radio"
+                    name="reminder_type"
+                    value="both"
+                    onChange={() => setNewReminderType("both")}
                   />
-                Both
-              </label>
-                  </div>
+                  Both
+                </label>
+              </div>
             </>
           )}
-         
+
           <Button
             size="full"
             role="primary"
@@ -302,16 +340,16 @@ export default function Profile({
               size="full"
               role="secondary"
               onClick={() => {
-                setNewArtistName(artistName)
-                setNewGenre(genre)
-                setNewLocation(location)
-                setNewPhoneNumber(phoneNumber)
-                setNewMonthlyReminder(monthly_reminder)
-                setNewSongSubmissions(notify_on_new_song)
-                setNewReminderType(reminder_type)
+                setNewArtistName(artistName);
+                setNewGenre(genre);
+                setNewLocation(location);
+                setNewPhoneNumber(phoneNumber);
+                setNewMonthlyReminder(monthly_reminder);
+                setNewSongSubmissions(notify_on_new_song);
+                setNewReminderType(reminder_type);
                 setIsEditing(false);
-                setValidPhoneNumber(""); 
-                setIsValid(false); 
+                setValidPhoneNumber("");
+                setIsValid(false);
               }}
             >
               Cancel
@@ -322,22 +360,48 @@ export default function Profile({
       <div className="py-4 mb-[8rem] flex flex-col justify-around h-fit gap-6">
         {!isEditing && (
           <>
-            <h5 className="font-bold text-[1.25rem]">Your Songs</h5>
-            <p>
-              You have no songs! Go{" "}
-              <Link className="text-wabsLink" to="/submit-song">
-                Write A Bad Song!
-              </Link>
-            </p>
+            {songs.length > 0 ? (
+              <div className="border-4 border-wabsPurple max-h-[22rem] overflow-scroll p-4 rounded-lg w-fit m-auto flex flex-col gap-3">
+                <h5 className="font-bold text-[1.25rem] text-center">
+                  Your Songs
+                </h5>
+                {songs.map((song, index) => (
+                  <div className="w-full flex justify-end">
+                    <FeedCard
+                      key={index}
+                      publicUrl={song.publicUrl}
+                      storagePath={song.storagePath}
+                      photo={photo}
+                      location={location}
+                      title={song.title}
+                      lyrics={song.lyrics}
+                      artist={artistName}
+                      user_id={song.user_id}
+                      song_id={song.id}
+                      handleDeleteSong={handleDeleteSong}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <p>
+                  You have no songs! Go{" "}
+                  <Link className="text-wabsLink" to="/submit-song">
+                    Write A Bad Song!
+                  </Link>
+                </p>
+              </>
+            )}
           </>
         )}
         {isEditing ? (
-          <Link className="text-wabsLink" to="/delete-account">
+          <Link className="text-wabsLink text-center" to="/delete-account">
             Delete Account
           </Link>
         ) : (
           <p
-            className="text-wabsLink hover:cursor-pointer"
+            className="text-wabsLink hover:cursor-pointer text-center"
             onClick={handleLogoutfromProfile}
           >
             Log Out
