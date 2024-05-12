@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { getAllSubscribers, getMonthlySubscribers } from "../../supabaseHelpers";
+import {
+  getAllSubscribers,
+  getMonthlySubscribers,
+} from "../../supabaseHelpers";
 import { useLocation, useNavigate } from "react-router-dom";
 import { sendNotification } from "./helpers";
 
@@ -8,6 +11,7 @@ export type Subscribers = {
   artist_name: string;
   reminder_type: "text" | "email" | "both";
   user_id: string;
+  notify_on_new_song: boolean;
 };
 
 export type Song = {
@@ -18,13 +22,14 @@ export type Song = {
 
 export default function Notifications() {
   const [subscribers, setSubscribers] = useState<Subscribers[]>([]);
-  const [monthlySubscribers, setMonthlySubscribers] = useState<Subscribers[]>([]);
+  const [monthlySubscribers, setMonthlySubscribers] = useState<Subscribers[]>(
+    []
+  );
   const [urlParams, setUrlParams] = useState<URLSearchParams>();
   const [newSong, setNewSong] = useState<Song>();
 
-
   const windowLocation = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   //set url params and get monthly reminders for those who haven't submitted
   useEffect(() => {
@@ -35,7 +40,9 @@ export default function Notifications() {
       const nextSubscribers = await getAllSubscribers();
       if (nextSubscribers) {
         setSubscribers(nextSubscribers);
-        const nextMonthlySubscribers = await getMonthlySubscribers(nextSubscribers);
+        const nextMonthlySubscribers = await getMonthlySubscribers(
+          nextSubscribers
+        );
         if (nextMonthlySubscribers) {
           setMonthlySubscribers(nextMonthlySubscribers);
         }
@@ -46,41 +53,37 @@ export default function Notifications() {
 
   useEffect(() => {
     if (!urlParams) return;
-    if (!urlParams.get("title") || !urlParams.get("artist_name") || !urlParams.get("publicUrl")) return;
+    if (
+      !urlParams.get("title") ||
+      !urlParams.get("artist_name") ||
+      !urlParams.get("publicUrl")
+    )
+      return;
     setNewSong({
       title: urlParams.get("title") || "",
       artist_name: urlParams.get("artist") || "",
       publicUrl: urlParams.get("publicUrl") || "",
     });
-  }, [urlParams])
+  }, [urlParams]);
 
   // Use url params to either send monthly or new-song notifications
   useEffect(() => {
     if (urlParams) {
       if (monthlySubscribers.length > 0) {
         if (urlParams.get("notification_type") === "monthly") {
-          for (const monthlySubscriber of monthlySubscribers) {
-            if (monthlySubscriber.reminder_type === "email" || monthlySubscriber.reminder_type === "both")
-              sendNotification(subscribers, "monthly", "email");
-            if (monthlySubscriber.reminder_type === "text" || monthlySubscriber.reminder_type === "both") 
-              sendNotification(subscribers, "monthly", "text");
-          }
+          for (const subscriber of monthlySubscribers)
+            sendNotification(subscriber, "monthly");
         }
-        } else if (urlParams.get("notification_type") === "new_song" && subscribers.length > 0) {
-
-          for (const subscriber of subscribers) {
-            console.log(subscriber)
-            if (subscriber.reminder_type === "email" || subscriber.reminder_type === "both") {
-              sendNotification(subscribers, "new_song", "email", newSong);
-              navigate("/feed")
-            }
-            if (subscriber.reminder_type === "text" || subscriber.reminder_type === "both") {
-          sendNotification(subscribers, "new_song", "text", newSong);
-          navigate("/feed")
-            }
-          }
-        
-        }
+      } else if (
+        urlParams.get("notification_type") === "new_song" &&
+        subscribers.length > 0
+      ) {
+        const newSongSubscribers = subscribers.filter(
+          (subscriber) => subscriber.notify_on_new_song === true
+        );
+        for (const subscriber of newSongSubscribers)
+          sendNotification(subscriber, "new_song", newSong);
+      }
     }
     //eslint-disable-next-line
   }, [subscribers, urlParams, navigate, monthlySubscribers]);
@@ -89,6 +92,7 @@ export default function Notifications() {
     <div>
       <h1>
         {subscribers.length} {subscribers.length > 1 ? "Emails" : "Email"} sent!
+        This is innacurate!
       </h1>
     </div>
   );

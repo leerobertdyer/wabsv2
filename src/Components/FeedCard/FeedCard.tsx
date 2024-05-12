@@ -63,7 +63,7 @@ export default function FeedCard(props: PropsDefinition) {
 
   return (
     <>
-    {showWarning && WarningDialogue({yesCallback: handleCommitDelete, noCallback: () => setShowWarning(false)})}
+    {showWarning && WarningDialogue({message: "  Are you sure you want to delete your song?", yesCallback: handleCommitDelete, noCallback: () => setShowWarning(false)})}
       {!isDeleted ?
 
       <div className="flex flex-col gap-2 p-4 border border-black rounded-lg w-[99%] overflow-hidden max-w-[25rem] m-auto">

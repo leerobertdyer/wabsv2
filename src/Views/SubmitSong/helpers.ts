@@ -1,4 +1,7 @@
+import { Subscribers } from "../../Components/Notifications/Notifications";
+import { sendNotification } from "../../Components/Notifications/helpers";
 import { supabase } from "../../supabaseClient";
+import { getAllSubscribers } from "../../supabaseHelpers";
 
 type SubmitSongs = {
   title: string;
@@ -13,37 +16,58 @@ type SubmitSongs = {
 };
 
 async function updateSong(props: SubmitSongs) {
-  const { title, lyrics, publicUrl, finished, storagePath, photo, location, artist_name: artistName, song_id } = props;
+  const {
+    title,
+    lyrics,
+    publicUrl,
+    finished,
+    storagePath,
+    photo,
+    location,
+    artist_name: artist_name,
+    song_id,
+  } = props;
   const user = await supabase.auth.getUser();
   if (user.data?.user?.id) {
     const user_id = user.data.user.id;
-    const { data, error } = await supabase.from("songs").update([
-      {
-        user_id,
-        title,
-        lyrics,
-        publicUrl,
-        storagePath,
-        photo,
-        location,
-        artistName,
-        finished
-      },
-    ]).eq('id', song_id)
+    const { error } = await supabase
+      .from("songs")
+      .update([
+        {
+          user_id,
+          title,
+          lyrics,
+          publicUrl,
+          storagePath,
+          photo,
+          location,
+          artist_name,
+          finished,
+        },
+      ])
+      .eq("id", song_id);
     if (error) {
       alert(error.message);
       return;
     }
-    return data;
   }
 }
 
 async function submitSong(props: SubmitSongs) {
-  const { title, lyrics, publicUrl, finished, storagePath, photo, location, artist_name: artistName } = props;
+  const {
+    title,
+    lyrics,
+    publicUrl,
+    finished,
+    storagePath,
+    photo,
+    location,
+    artist_name: artist_name,
+  } = props;
   const user = await supabase.auth.getUser();
   if (user.data?.user?.id) {
     const user_id = user.data.user.id;
-    const { data, error } = await supabase.from("songs").insert([
+    const { error } = await supabase.from("songs").insert([
       {
         user_id,
         title,
@@ -52,17 +76,34 @@ async function submitSong(props: SubmitSongs) {
         storagePath,
         photo,
         location,
-        artistName,
-        finished
+        artist_name,
+        finished,
       },
     ]);
     if (error) {
       alert(error.message);
       return;
     }
-    return data;
+    const { data: songData } = await supabase.storage
+      .from("songs")
+      .getPublicUrl(`/${artist_name}/${title}`);
+    if (!songData?.publicUrl) return alert("Error getting public URL");
+    const allSubscribers = await getAllSubscribers();
+    if (allSubscribers) {
+      const newSongSubscribers: Subscribers[] = allSubscribers.filter(
+        (subscriber) => subscriber.notify_on_new_song === true
+      );
+      if (newSongSubscribers) {
+        for (const subscriber of newSongSubscribers) {
+          sendNotification(subscriber, "new_song", {
+            title,
+            artist_name,
+            publicUrl: songData.publicUrl,
+          });
+        }
+      }
+    }
   }
 }
 
-
-export { submitSong, updateSong }
+export { submitSong, updateSong };

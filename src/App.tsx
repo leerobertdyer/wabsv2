@@ -13,6 +13,7 @@ import Feed from "./Views/Feed/Feed";
 import { useEffect, useState } from "react";
 import { HandleLogout } from "./supabaseHelpers";
 import Notification from "./Components/Notifications/Notifications";
+import DeleteAccount from "./Views/DeleteAccount/DeleteAccount";
 
 function App() {
   const [photo, setPhoto] = useState("");
@@ -123,6 +124,7 @@ function handleUpdateLoginState() {
           />
           <Route path="/feed" element={<Feed />} />
           <Route path="/contact" Component={Contact} />
+          <Route path="/delete-account" Component={DeleteAccount} />
         </Routes>
         {window.location.pathname !== "/contact" && <Footer />}
       </div>

@@ -30,6 +30,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
   const [isLoading, setIsLoading] = useState(false);
   const [notify_on_new_song, setNotifyOnNewSong] = useState(true);
   const [reminder_type, setReminderType] = useState<"email" | "text" | "both" | null>("email");
+  const [tempPhotoPath, setTempPhotoPath] = useState("");
 
   async function handleSignupSubmit() {
     if (reminder_type === "text" || reminder_type === "both") {
@@ -38,15 +39,23 @@ export default function Signup({ getProfile }: PropsDefinition) {
         setFormPage(2);
          return
         }
+        const resp = await fetch(`${import.meta.env.VITE_BACKEND_URL}/welcome-text`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({phone_number})
+        })
+        if (resp.ok) {
+          console.log("Phone number is valid")
+        }
     }
-    if (!artist_name || !email || !password) {
+    if (!artist_name || !email || !password || !photo) {
       alert("Please fill out all required fields");
       return
     }
     await signupWithSupabase({
+      tempPhotoPath,
       email,
       password,
-      photo,
       artist_name,
       genre,
       phone_number,
@@ -68,6 +77,7 @@ export default function Signup({ getProfile }: PropsDefinition) {
         <>
           {formPage === 1 ? (
             <SignupPage1
+              setTempPhotoPath={setTempPhotoPath}
               photo={photo}
               setPhoto={setPhoto}
               artist_name={artist_name}

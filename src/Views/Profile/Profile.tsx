@@ -112,8 +112,9 @@ export default function Profile({
     const file = e.target.files[0];
     if (file) {
       setIsLoading(true);
-      const publicUrl = await uploadPhotoToSupabase(file, artistName);
-      if (publicUrl) {
+      const photoData = await uploadPhotoToSupabase(file, artistName);
+      if (photoData) {
+        const publicUrl = photoData.publicUrl
         setNewPhoto(publicUrl);
         updateSupabaseColumn("profiles", "photo", publicUrl, id);
         setIsLoading(false);

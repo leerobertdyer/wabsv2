@@ -32,7 +32,6 @@ export default function SubmitSong({
   const [finished, setFinished] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [songUrlParams, setSongUrlParams] = useState<URLSearchParams>();
 
   const navigate = useNavigate()
 
@@ -64,12 +63,12 @@ export default function SubmitSong({
   // Upload Audio File
   async function handleUploadAudio(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
+    if (!songTitle) return alert('Please enter a song title before uploading audio.')
     setIsLoading(true);
     const file = e.target.files[0];
-    const fileName = artist_name + Date.now();
     const { data, error } = await supabase.storage
       .from("songs")
-      .upload(`/${fileName}`, file);
+      .upload(`/${songTitle}`, file);
     if (error) {
       alert(`Audio upload failed. Please try again. ${error.message}`);
       setIsLoading(false);
@@ -77,11 +76,11 @@ export default function SubmitSong({
     }
     if (data.path) setStoragePath(data.path);
     if (data) {
-      const { data } = supabase.storage
+      const { data: songData } = supabase.storage
         .from("songs")
-        .getPublicUrl(`/${fileName}`);
-      if (!data.publicUrl) return alert("Error getting public URL")
-      setMusic(data.publicUrl);
+        .getPublicUrl(`/${artist_name}/${songTitle}`);
+      if (!songData.publicUrl) return alert("Error getting public URL")
+      setMusic(songData.publicUrl);
       setIsLoading(false);
     }
   }
@@ -145,8 +144,6 @@ export default function SubmitSong({
         finished: false,
       });
     }
-    const urlParams = new URLSearchParams(`?notification_type=new_song&artist_name=${artist_name}&title=${songTitle}&publicUrl=${music}`);
-    setSongUrlParams(urlParams);
     setFinished(true);
     setSuccess(true);
     setIsUpdating(false);
@@ -163,7 +160,7 @@ export default function SubmitSong({
           <FaCircleCheck className="fill-wabsSuccess" size={110} />
           Success!
           <p>Your song has been {finished ? "posted!" : "saved!"}</p>
-          <Link className="w-[22rem]" to={finished ? `/send-notification?${songUrlParams}` : "/songs"}>
+          <Link className="w-[22rem]" to="/songs">
             <Button size="full" role="primary">
               Continue
             </Button>
