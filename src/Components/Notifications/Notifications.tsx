@@ -1,19 +1,35 @@
 import { useEffect, useState } from "react";
-import { getMonthlySubscribers } from "../../supabaseHelpers";
-import { useLocation } from "react-router-dom";
+import {
+  getAllSubscribers,
+  getMonthlySubscribers,
+} from "../../supabaseHelpers";
+import { useLocation, useNavigate } from "react-router-dom";
 import { sendNotification } from "./helpers";
 
 export type Subscribers = {
   email: string;
   artist_name: string;
   reminder_type: "text" | "email" | "both";
+  user_id: string;
+  notify_on_new_song: boolean;
+};
+
+export type Song = {
+  title: string;
+  artist_name: string;
+  publicUrl: string;
 };
 
 export default function Notifications() {
   const [subscribers, setSubscribers] = useState<Subscribers[]>([]);
+  const [monthlySubscribers, setMonthlySubscribers] = useState<Subscribers[]>(
+    []
+  );
   const [urlParams, setUrlParams] = useState<URLSearchParams>();
+  const [newSong, setNewSong] = useState<Song>();
 
   const windowLocation = useLocation();
+  const navigate = useNavigate();
 
   //set url params and get monthly reminders for those who haven't submitted
   useEffect(() => {
@@ -21,48 +37,62 @@ export default function Notifications() {
     const newUrlParams = new URLSearchParams(windowLocation.search);
     setUrlParams(newUrlParams);
     async function fetchSubscribers() {
-      const nextSubscribers = await getMonthlySubscribers();
+      const nextSubscribers = await getAllSubscribers();
       if (nextSubscribers) {
         setSubscribers(nextSubscribers);
+        const nextMonthlySubscribers = await getMonthlySubscribers(
+          nextSubscribers
+        );
+        if (nextMonthlySubscribers) {
+          setMonthlySubscribers(nextMonthlySubscribers);
+        }
       }
     }
     fetchSubscribers();
   }, [windowLocation.search]);
 
+  useEffect(() => {
+    if (!urlParams) return;
+    if (
+      !urlParams.get("title") ||
+      !urlParams.get("artist_name") ||
+      !urlParams.get("publicUrl")
+    )
+      return;
+    setNewSong({
+      title: urlParams.get("title") || "",
+      artist_name: urlParams.get("artist") || "",
+      publicUrl: urlParams.get("publicUrl") || "",
+    });
+  }, [urlParams]);
+
   // Use url params to either send monthly or new-song notifications
   useEffect(() => {
     if (urlParams) {
-      for (const [key, value] of urlParams.entries()) {
-        console.log(key, value);
-      }
-      console.log(subscribers)
-      if (subscribers.length > 0) {
+      if (monthlySubscribers.length > 0) {
         if (urlParams.get("notification_type") === "monthly") {
-          for (const subscriber of subscribers) {
-            if (subscriber.reminder_type === "email" || subscriber.reminder_type === "both")
-              sendNotification(subscribers, "monthly", "email");
-            if (subscriber.reminder_type === "text" || subscriber.reminder_type === "both") 
-              sendNotification(subscribers, "monthly", "text");
-          }
-        } else if (urlParams.get("notification_type") === "new_song") {
-          for (const subscriber of subscribers) {
-            if (subscriber.reminder_type === "email" || subscriber.reminder_type === "both") {
-          sendNotification(subscribers, "new_song", "email");
-            }
-            if (subscriber.reminder_type === "text" || subscriber.reminder_type === "both") {
-          sendNotification(subscribers, "new_song", "text");
-            }
-          }
-        
+          for (const subscriber of monthlySubscribers)
+            sendNotification(subscriber, "monthly");
         }
+      } else if (
+        urlParams.get("notification_type") === "new_song" &&
+        subscribers.length > 0
+      ) {
+        const newSongSubscribers = subscribers.filter(
+          (subscriber) => subscriber.notify_on_new_song === true
+        );
+        for (const subscriber of newSongSubscribers)
+          sendNotification(subscriber, "new_song", newSong);
       }
     }
-  }, [subscribers, urlParams]);
+    //eslint-disable-next-line
+  }, [subscribers, urlParams, navigate, monthlySubscribers]);
 
   return (
     <div>
       <h1>
         {subscribers.length} {subscribers.length > 1 ? "Emails" : "Email"} sent!
+        This is innacurate!
       </h1>
     </div>
   );

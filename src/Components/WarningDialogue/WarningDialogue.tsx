@@ -1,4 +1,5 @@
 type PropsDefinition = {
+    message: string;
     yesCallback?: () => void;
     noCallback?: () => void;
 }
@@ -18,7 +19,7 @@ export default function WarningDialogue(props: PropsDefinition) {
         <span className="w-[40%] text-center">
             Delete Song
             </span>
-            Are you sure you want to delete your song?
+          {props.message}
         <div className="flex flex-col justify-center items-center w-full gap-3">
           <button 
           className="

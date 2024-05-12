@@ -11,14 +11,14 @@ import Loading from "../../Components/Loading/Loading";
 import { useLocation } from 'react-router-dom';
 
 type PropsDefinition = {
-  artistName: string;
+  artist_name: string;
   photo: string;
   location: string;
   isLoggedIn: boolean;
 };
 
 export default function SubmitSong({
-  artistName,
+  artist_name,
   location,
   photo,
   isLoggedIn
@@ -63,12 +63,12 @@ export default function SubmitSong({
   // Upload Audio File
   async function handleUploadAudio(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
+    if (!songTitle) return alert('Please enter a song title before uploading audio.')
     setIsLoading(true);
     const file = e.target.files[0];
-    const fileName = artistName + Date.now();
     const { data, error } = await supabase.storage
       .from("songs")
-      .upload(`/${fileName}`, file);
+      .upload(`/${songTitle}`, file);
     if (error) {
       alert(`Audio upload failed. Please try again. ${error.message}`);
       setIsLoading(false);
@@ -76,11 +76,11 @@ export default function SubmitSong({
     }
     if (data.path) setStoragePath(data.path);
     if (data) {
-      const { data } = supabase.storage
+      const { data: songData } = supabase.storage
         .from("songs")
-        .getPublicUrl(`/${fileName}`);
-      if (!data.publicUrl) return alert("Error getting public URL");
-      setMusic(data.publicUrl);
+        .getPublicUrl(`/${artist_name}/${songTitle}`);
+      if (!songData.publicUrl) return alert("Error getting public URL")
+      setMusic(songData.publicUrl);
       setIsLoading(false);
     }
   }
@@ -96,7 +96,7 @@ export default function SubmitSong({
         storagePath: storagePath,
         photo,
         location,
-        artistName,
+        artist_name,
         song_id,
         finished: false,
       });
@@ -108,7 +108,7 @@ export default function SubmitSong({
         storagePath: storagePath,
         photo,
         location,
-        artistName,
+        artist_name,
         finished: false,
       });
     }
@@ -128,7 +128,7 @@ export default function SubmitSong({
         storagePath: storagePath,
         photo,
         location,
-        artistName,
+        artist_name,
         finished: false,
         song_id: song_id
       })
@@ -140,7 +140,7 @@ export default function SubmitSong({
         storagePath: storagePath,
         photo,
         location,
-        artistName,
+        artist_name,
         finished: false,
       });
     }
@@ -160,7 +160,7 @@ export default function SubmitSong({
           <FaCircleCheck className="fill-wabsSuccess" size={110} />
           Success!
           <p>Your song has been {finished ? "posted!" : "saved!"}</p>
-          <Link className="w-[22rem]" to="/feed">
+          <Link className="w-[22rem]" to="/songs">
             <Button size="full" role="primary">
               Continue
             </Button>

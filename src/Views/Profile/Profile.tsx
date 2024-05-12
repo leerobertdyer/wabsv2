@@ -8,6 +8,8 @@ import Loading from "../../Components/Loading/Loading";
 import { supabase } from "../../supabaseClient";
 import { updateSupabaseColumn } from "../../supabaseHelpers";
 import Toggle from "react-toggle";
+import IntlTelInput from "intl-tel-input/react";
+import "intl-tel-input/build/css/intlTelInput.css";
 
 type PropsDefinition = {
   photo: string;
@@ -41,6 +43,8 @@ export default function Profile({
   const [newGenre, setNewGenre] = useState("");
   const [newLocation, setNewLocation] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [validPhoneNumber, setValidPhoneNumber] = useState("");
+  const [isValid, setIsValid] = useState(false);
   const [newMonthlyReminder, setNewMonthlyReminder] =
     useState(monthly_reminder);
   const [newSongSubmission, setNewSongSubmissions] =
@@ -51,21 +55,34 @@ export default function Profile({
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (isValid) {
+      setNewPhoneNumber(validPhoneNumber);
+    }
+    //eslint-disable-next-line
+  }, [validPhoneNumber]);
+
+  useEffect(() => {
+    if (!isValid) {
+      setNewPhoneNumber("");
+    }
+  }, [isValid, setNewPhoneNumber]);
+
+  useEffect(() => {
     async function setUpProfile() {
       const user = await supabase.auth.getUser();
       if (user.data.user === null) navigate("/login");
       if (user.data?.user?.id) {
         const user_id = user.data.user.id;
         setId(user_id);
-        const {data: profile} = await supabase
+        const { data: profile } = await supabase
           .from("users")
           .select("*")
           .eq("user_id", user_id);
-          if (profile) {
-        setNewMonthlyReminder(profile[0].monthly_reminder);
-        setNewSongSubmissions(profile[0].notify_on_new_song);
-        setNewReminderType(profile[0].reminder_type);
-          }
+        if (profile) {
+          setNewMonthlyReminder(profile[0].monthly_reminder);
+          setNewSongSubmissions(profile[0].notify_on_new_song);
+          setNewReminderType(profile[0].reminder_type);
+        }
       }
       await getProfile();
     }
@@ -73,17 +90,6 @@ export default function Profile({
   }, [artistName, getProfile, navigate]);
 
   async function handleEditProfile() {
-    console.log(
-      "new values",
-      newMonthlyReminder,
-      newSongSubmission,
-      newReminderType,
-      id,
-      newArtistName,
-      newGenre,
-      newLocation,
-      newPhoneNumber
-    );
     setIsLoading(true);
     if (newArtistName)
       updateSupabaseColumn("users", "artist_name", newArtistName, id);
@@ -106,8 +112,9 @@ export default function Profile({
     const file = e.target.files[0];
     if (file) {
       setIsLoading(true);
-      const publicUrl = await uploadPhotoToSupabase(file, artistName);
-      if (publicUrl) {
+      const photoData = await uploadPhotoToSupabase(file, artistName);
+      if (photoData) {
+        const publicUrl = photoData.publicUrl
         setNewPhoto(publicUrl);
         updateSupabaseColumn("profiles", "photo", publicUrl, id);
         setIsLoading(false);
@@ -158,7 +165,28 @@ export default function Profile({
             </div>
           )}
         </div>
-        <div className="flex flex-col w-[22rem] m-auto items-center gap-2 py-6">
+        <div className="flex flex-col w-[22rem] m-auto items-center gap-2 py-6 my-2 rounded-lg border border-wabsPurple p-4">
+        <div className={isEditing ? "block bg-wabsPurple rounded-md p-[4px]" : "hidden"}>
+          <IntlTelInput
+                initialValue={""}
+                onChangeNumber={(e) => setValidPhoneNumber(e)}
+                onChangeValidity={(e) => setIsValid(e)}
+                onChangeErrorCode={(e) => {
+                  if (e) console.log("Error: ", e);
+                }}
+                // any initialisation options from the readme will work here
+                initOptions={{
+                  initialCountry: "us",
+                  separateDialCode: true,
+                  placeholderNumberType: "MOBILE",
+                  autoPlaceholder: "aggressive",
+                  formatAsYouType: true,
+                  formatOnDisplay: true,
+                  nationalMode: false,
+                  utilsScript: "/node_modules/intl-tel-input/build/js/utils.js",
+                }}
+              />
+          </div>
           {!isEditing ? (
             <>
               <h2>{artistName}</h2>
@@ -189,13 +217,7 @@ export default function Profile({
                 placeholder={location}
                 onChange={(e) => setNewLocation(e.target.value)}
               />
-              <InputField
-                id="phoneNumber"
-                type="text"
-                labelName="Phone Number"
-                placeholder={phoneNumber}
-                onChange={(e) => setNewPhoneNumber(e.target.value)}
-              />
+              <div className="flex flex-col gap-4 border border-wabsPurple rounded-lg p-4 w-full">
               <label className="flex items-center gap-2">
                 Monthly Reminder
                 <Toggle
@@ -203,8 +225,9 @@ export default function Profile({
                   onClick={() => {
                     setNewMonthlyReminder(!newMonthlyReminder);
                   }}
-                />
+                  />
               </label>
+
               <label className="flex items-center gap-2">
                 Song Submissions
                 <Toggle
@@ -212,37 +235,59 @@ export default function Profile({
                   onClick={() => {
                     setNewSongSubmissions(!newSongSubmission);
                   }}
-                />
+                  />
               </label>
-              <label className={`flex items-center gap-2 ${newReminderType === "email" ? "bg-wabsPurple text-white rounded-lg px-4" : ""}`}>
+                  </div>
+                    <div className="flex flex-col items-center gap-4 border border-wabsPurple rounded-lg p-4 w-full">
+              <label
+                className={`flex items-center gap-2 ${
+                  newReminderType === "email"
+                  ? "bg-wabsPurple text-white rounded-lg px-4"
+                  : ""
+                }`}
+                >
                 <input
                   type="radio"
                   name="reminder_type"
                   value="email"
                   onChange={() => setNewReminderType("email")}
-                />
+                  />
                 Email
               </label>
-              <label className={`flex items-center gap-2 ${newReminderType === "text" ? "bg-wabsPurple text-white rounded-lg px-4" : ""}`}>
+              <label
+                className={`flex items-center gap-2 ${
+                  newReminderType === "text"
+                  ? "bg-wabsPurple text-white rounded-lg px-4"
+                  : ""
+                }`}
+                >
                 <input
                   type="radio"
                   name="reminder_type"
                   value="text"
                   onChange={() => setNewReminderType("text")}
-                />
+                  />
                 Text
               </label>
-              <label className={`flex items-center gap-2 ${newReminderType === "both" ? "bg-wabsPurple text-white rounded-lg px-4" : ""}`}>
+              <label
+                className={`flex items-center gap-2 ${
+                  newReminderType === "both"
+                  ? "bg-wabsPurple text-white rounded-lg px-4"
+                  : ""
+                }`}
+                >
                 <input
                   type="radio"
                   name="reminder_type"
                   value="both"
                   onChange={() => setNewReminderType("both")}
-                />
+                  />
                 Both
               </label>
+                  </div>
             </>
           )}
+         
           <Button
             size="full"
             role="primary"
@@ -252,6 +297,26 @@ export default function Profile({
           >
             {isEditing ? `Save` : `Edit`}
           </Button>
+          {isEditing && (
+            <Button
+              size="full"
+              role="secondary"
+              onClick={() => {
+                setNewArtistName(artistName)
+                setNewGenre(genre)
+                setNewLocation(location)
+                setNewPhoneNumber(phoneNumber)
+                setNewMonthlyReminder(monthly_reminder)
+                setNewSongSubmissions(notify_on_new_song)
+                setNewReminderType(reminder_type)
+                setIsEditing(false);
+                setValidPhoneNumber(""); 
+                setIsValid(false); 
+              }}
+            >
+              Cancel
+            </Button>
+          )}
         </div>
       </div>
       <div className="py-4 mb-[8rem] flex flex-col justify-around h-fit gap-6">
