@@ -74,7 +74,8 @@ export default function Songs() {
   }
 
   return (
-    <div className="p-4 text-center">
+    <div className="text-center">
+      <h1 className="w-screen text-white p-4 mb-8 bg-wabsPurple text-xl font-bold">My Songs</h1>
       <div className="w-[22rem] m-auto">
         <Link to="/submit-song">
           <Button type="button" role="primary" size="full">
@@ -82,51 +83,51 @@ export default function Songs() {
           </Button>
         </Link>
       </div>
-      <h1 className="text-xl font-bold">My Songs</h1>
       <div className="flex flex-col items-center pt-4">
-        <div className="border-2 border-wabsPurple rounded-lg w-[90%] m-auto ">
-          <h2 className="text-2xl text-wabsPurple p-4 text-center">Songs In Progress</h2>
-          <div className="flex flex-wrap justify-evenly p-4">
-            {unfinishedSongs.map((song, idx) => (
-              <FeedCard
-                key={idx}
-                publicUrl={song.publicUrl}
-                storagePath={song.storagePath}
-                photo={photo}
-                location={location}
-                title={song.title}
-                lyrics={song.lyrics}
-                artist={artist}
-                user_id={song.user_id}
-                song_id={song.id}
-                handleDeleteSong={handleDeleteSong}
-              />
-            ))}
-          </div>
+        {unfinishedSongs.length > 0 && (
+          <>
+          <h2 className="text-2xl text-wabsPurple p-4 text-center">
+            Songs In Progress
+          </h2>
+        <div className="flex flex-wrap justify-evenly p-4">
+          {unfinishedSongs.map((song, idx) => (
+            <FeedCard
+            key={idx}
+            publicUrl={song.publicUrl}
+            storagePath={song.storagePath}
+            photo={photo}
+            location={location}
+            title={song.title}
+            lyrics={song.lyrics}
+            artist={artist}
+            user_id={song.user_id}
+            song_id={song.id}
+            handleDeleteSong={handleDeleteSong}
+            />
+          ))}
         </div>
-          <br/>
-          <br/>
-        <div className="border-2 border-wabsPurple rounded-lg w-[90%] m-auto ">
-          <h3 className="bg-white text-wabsPurple text-2xl p-4 text-center w-fit m-auto">
-            Finished Songs
-          </h3>
-          <div className="flex flex-wrap w-full justify-evenly">
-            {songs.map((song, idx) => (
-              <FeedCard
-                key={idx}
-                publicUrl={song.publicUrl}
-                storagePath={song.storagePath}
-                photo={photo}
-                location={location}
-                title={song.title}
-                lyrics={song.lyrics}
-                artist={artist}
-                user_id={song.user_id}
-                song_id={song.id}
-                handleDeleteSong={handleDeleteSong}
-              />
-            ))}
-          </div>
+        <br/><br/>
+          </>
+        )}
+        <h3 className="bg-white text-wabsPurple text-2xl p-4 text-center w-fit m-auto">
+          Finished Songs
+        </h3>
+        <div className="flex flex-wrap w-full justify-evenly">
+          {songs.map((song, idx) => (
+            <FeedCard
+              key={idx}
+              publicUrl={song.publicUrl}
+              storagePath={song.storagePath}
+              photo={photo}
+              location={location}
+              title={song.title}
+              lyrics={song.lyrics}
+              artist={artist}
+              user_id={song.user_id}
+              song_id={song.id}
+              handleDeleteSong={handleDeleteSong}
+            />
+          ))}
         </div>
       </div>
     </div>
