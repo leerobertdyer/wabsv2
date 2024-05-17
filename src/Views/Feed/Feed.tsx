@@ -34,17 +34,21 @@ export default function Feed() {
     getSongs();
   }, []);
 
+  type SongDefinition = {
+    id: number;
+  }
+
   async function getSongs() {
     const { data, error } = await supabase
       .from("songs")
       .select(`*`)
       .eq("finished", true)
-      .order("created_at", { ascending: false });
 
     if (error) {
       alert(`Error fetching songs: ${error.message}`);
     }
     if (data) {
+      data.sort((a: SongDefinition, b: SongDefinition ) => b.id - a.id)
       setSongs(data);
     }
   }
